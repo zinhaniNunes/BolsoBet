@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>BolsoBet</title>
+    <link rel="icon" type="image/svg+xml" href="/BolsoBet/assets/logo.svg">
+    <link rel="stylesheet" href="/BolsoBet/style.css">
+    <script>
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+
+    if (!usuario) {
+        window.location.href = "/BolsoBet/templates/login.html";
+    }
+    </script>
+</head>
+
+<body>
+
+    <header class="navbar">
+
+    <a href="home.html" class="logo">
+        <img src="/BolsoBet/assets/logo.svg" alt="BolsoBet">
+        <span class="logo-text">BolsoBet</span>
+    </a>
+
+    <div class="navbar-right">
+
+        <button class="icon-btn" id="sound-btn" title="Som">
+            🔊
+        </button>
+
+        <!-- Mostrar quando NÃO estiver logado -->
+        <div class="guest-buttons">
+
+            <a href="/BolsoBet/templates/login.html" class="btn btn-login">
+                Entrar
+            </a>
+
+            <a href="/BolsoBet/templates/register.html" class="btn btn-register">
+                Cadastrar
+            </a>
+
+        </div>
+
+        <!-- Mostrar quando estiver logado -->
+        <div class="user-buttons" style="display: none;">
+
+            <button class="btn saldo-btn">
+                💰 R$ 0,00
+            </button>
+
+            <button class="btn perfil-btn">
+                👤 Perfil
+            </button>
+
+        </div>
+
+    </div>
+
+    </header>
+
+    <main>
+
+
+
+    </main>
+
+</body>
+
+</html>

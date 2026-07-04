@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>BolsoBet</title>
+    <link rel="icon" type="image/svg+xml" href="/BolsoBet/assets/logo.svg">
+    <link rel="stylesheet" href="/BolsoBet/style.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+
+    <a href="home.html" class="logo">
+        <img src="/BolsoBet/assets/logo.svg" alt="BolsoBet">
+        <span class="logo-text">BolsoBet</span>
+    </a>
+
+    <div class="navbar-right">
+
+        <button class="icon-btn" id="sound-btn" title="Som">
+            🔊
+        </button>
+
+        <!-- Mostrar quando NÃO estiver logado -->
+        <div class="guest-buttons">
+
+            <a href="/BolsoBet/templates/login.html" class="btn btn-login">
+                Entrar
+            </a>
+
+            <a href="/BolsoBet/templates/register.html" class="btn btn-register">
+                Cadastrar
+            </a>
+
+        </div>
+
+        <!-- Mostrar quando estiver logado -->
+        <div class="user-buttons" style="display: none;">
+
+            <button class="btn saldo-btn">
+                💰
+            </button>
+
+            <button class="btn perfil-btn">
+                👤
+            </button>
+
+        </div>
+
+    </div>
+
+    </header>
+
+    <main>
+        <script>
+            location.replace("templates/home.html");
+        </script>
+    </main>
+
+    <div class="esclarecimento">
+        <label>
+            Nós da BolsoBet afirmamos que nós não temos nenhuma relação com o politico "Jair Messias Bolsonaro" ou qualquer um de seus familiares,
+            o nome BolsoBet vem da palavra "bolso" e sua relação metaforica com questões monetarias.
+        </label>
+        <div class="lateral">
+            <a class="anexo" href="termos.html">
+                termos do site
+            </a>
+            <a class="anexo" href="assets/model/jogos.zip">
+                Código Base dos jogos
+            </a>
+        </div>
+    </div>
+
+</body>
+
+</html>
