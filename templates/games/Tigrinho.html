@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <title>BolsoBet</title>
-    <link rel="icon" type="image/svg+xml" href="/BolsoBet/assets/logo.svg">
-    <link rel="stylesheet" href="/BolsoBet/static/style.css">
+    <link rel="icon" type="image/svg+xml" href="/static/assets/logo.svg">
+    <link rel="stylesheet" href="/static/style.css">
     <script>
     const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
 
     if (!usuario) {
-        window.location.href = "/BolsoBet/templates/login.html";
+        window.location.href = "/templates/login.html";
     }
     </script>
 </head>
@@ -20,7 +20,7 @@
     <header class="navbar">
 
     <a href="home.html" class="logo">
-        <img src="/BolsoBet/assets/logo.svg" alt="BolsoBet">
+        <img src="/static/assets/logo.svg" alt="BolsoBet">
         <span class="logo-text">BolsoBet</span>
     </a>
 
@@ -33,11 +33,11 @@
         <!-- Mostrar quando NÃO estiver logado -->
         <div class="guest-buttons">
 
-            <a href="/BolsoBet/templates/login.html" class="btn btn-login">
+            <a href="/templates/login.html" class="btn btn-login">
                 Entrar
             </a>
 
-            <a href="/BolsoBet/templates/register.html" class="btn btn-register">
+            <a href="/templates/register.html" class="btn btn-register">
                 Cadastrar
             </a>
 

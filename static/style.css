@@ -337,23 +337,16 @@ body{
 
 }
 
-.login-box h1{
+.login-box h1 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    text-align: center;
+    font-family: "Poppins", sans-serif;
 
-    margin-top:0;
-    margin-bottom:8px;
-
-    text-align:center;
-
-    font-family:"Poppins",sans-serif;
-
-    background:linear-gradient(
-        90deg,
-        #FFD700,
-        #6fa00e
-    );
-
-    -webkit-text-fill-color:transparent;
-
+    background: linear-gradient(90deg, #FFD700, #6fa00e);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .login-box p{
