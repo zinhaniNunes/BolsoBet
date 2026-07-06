@@ -12,7 +12,7 @@
 
     <header class="navbar">
 
-    <a href="home.html" class="logo">
+    <a href="/" class="logo">
         <img src="/static/assets/logo.svg" alt="BolsoBet">
         <span class="logo-text">BolsoBet</span>
     </a>
@@ -23,31 +23,40 @@
             🔊
         </button>
 
-        <!-- Mostrar quando NÃO estiver logado -->
+
+        {% if "usuario_id" in session %}
+
+        <div class="user-buttons">
+
+            <button class="btn saldo-btn">
+                💰 R$ {{ "%.2f"|format(session["saldo"]) }}
+            </button>
+
+            <button class="btn perfil-btn">
+                👤 {{ session["nome"] }}
+            </button>
+
+            <a href="/logout" class="btn btn-login">
+                Sair
+            </a>
+
+        </div>
+
+        {% else %}
+
         <div class="guest-buttons">
 
-            <a href="/templates/login.html" class="btn btn-login">
+            <a href="/login" class="btn btn-login">
                 Entrar
             </a>
 
-            <a href="/templates/register.html" class="btn btn-register">
+            <a href="/register" class="btn btn-register">
                 Cadastrar
             </a>
 
         </div>
 
-        <!-- Mostrar quando estiver logado -->
-        <div class="user-buttons" style="display: none;">
-
-            <button class="btn saldo-btn">
-                💰
-            </button>
-
-            <button class="btn perfil-btn">
-                👤
-            </button>
-
-        </div>
+        {% endif %}
 
     </div>
 
@@ -81,7 +90,7 @@
                 slots 🎰:
             </p>
             <div class="lateral">
-                <a href="/templates/games/Tigrinho.html" class="card">
+                <a href="/games/tigrinho" class="card">
 
                     <img src="/static/assets/banners/Tigrinho.png">
 
@@ -93,7 +102,7 @@
                     </div>
 
                 </a>
-                <a href="/templates//games/slot_cassino.html" class="card">
+                <a href="/templates/games/slot_cassino.html" class="card">
 
                     <img src="/static/assets/banners/slot_cassino.png">
 
@@ -105,7 +114,7 @@
                     </div>
 
                 </a>
-                                <a href="/templates//games/slot_pirata.html" class="card">
+                                <a href="/templates/games/slot_pirata.html" class="card">
 
                     <img src="/static/assets/banners/slot_pirata.png">
 
@@ -117,7 +126,7 @@
                     </div>
 
                 </a>
-                                <a href="/templates//games/slot_zeus.html" class="card">
+                                <a href="/templates/games/slot_zeus.html" class="card">
 
                     <img src="/static/assets/banners/slot_zeus.png">
 
@@ -132,7 +141,7 @@
             </div>
 
             <div class="lateral">
-                <a href="/templates//games/slot_egito.html" class="card">
+                <a href="/templates/games/slot_egito.html" class="card">
 
                     <img src="/static/assets/banners/slot_egito.png">
 
@@ -143,7 +152,7 @@
                     </div>
 
                 </a>
-                <a href="/templates//games/slot_Brasil.html" class="card">
+                <a href="/templates/games/slot_Brasil.html" class="card">
 
                     <img src="/static/assets/banners/slot_Brasil.png">
 
@@ -155,7 +164,7 @@
                     </div>
 
                 </a>
-                                <a href="/templates//games/slot_classic.html" class="card">
+                                <a href="/templates/games/slot_classic.html" class="card">
 
                     <img src="/static/assets/banners/slot_classic.png">
 
@@ -167,7 +176,7 @@
                     </div>
 
                 </a>
-                                <a href="/templates//games/slot_fortune_King.html" class="card">
+                                <a href="/templates/games/slot_fortune_King.html" class="card">
 
                     <img src="/static/assets/banners/slot_fortune_King.png">
 
@@ -184,7 +193,7 @@
                 Jogos Variados ♦️♠️♥️♣️:
             </p>
                         <div class="lateral">
-                <a href="/templates//games/21.html" class="card">
+                <a href="/templates/games/21.html" class="card">
 
                     <img src="/static/assets/banners/21.png">
 
@@ -196,7 +205,7 @@
                     </div>
 
                 </a>
-                <a href="/templates//games/roleta.html" class="card">
+                <a href="/templates/games/roleta.html" class="card">
 
                     <img src="/static/assets/banners/Roleta.png">
 
@@ -208,7 +217,7 @@
                     </div>
 
                 </a>
-                                <a href="/templates//games/fortune_mines.html" class="card">
+                                <a href="/templates/games/fortune_mines.html" class="card">
 
                     <img src="/static/assets/banners/fortune_mines.png">
 
@@ -220,7 +229,7 @@
                     </div>
 
                 </a>
-                                <a href="/templates//games/aviator.html" class="card">
+                                <a href="/templates/games/aviator.html" class="card">
 
                     <img src="/static/assets/banners/aviator.png">
 
@@ -244,10 +253,10 @@
             o nome BolsoBet vem da palavra "bolso" e sua relação metaforica com questões monetarias.
         </label>
         <div class="lateral anexo">
-            <a class="anexo" href="termos.html">
+            <a class="anexo" href="/termos">
                 termos do site
             </a>
-            <a class="anexo" href="assets/model/jogos.zip">
+            <a class="anexo" href="/static/assets/model/jogos.zip">
                 Código Base dos jogos
             </a>
         </div>

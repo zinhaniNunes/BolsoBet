@@ -10,9 +10,17 @@
 
 <body>
 
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <script>
+                alert("{{ messages[0] }}");
+            </script>
+        {% endif %}
+    {% endwith %}
+
     <header class="navbar">
 
-    <a href="home.html" class="logo">
+    <a href="/" class="logo">
         <img src="/static/assets/logo.svg" alt="BolsoBet">
         <span class="logo-text">BolsoBet</span>
     </a>
@@ -23,20 +31,19 @@
             🔊
         </button>
 
-        <!-- Mostrar quando NÃO estiver logado -->
+
         <div class="guest-buttons">
 
-            <a href="/templates/login.html" class="btn btn-login">
+            <a href="/login" class="btn btn-login">
                 Entrar
             </a>
 
-            <a href="/templates/register.html" class="btn btn-register">
+            <a href="/register" class="btn btn-register">
                 Cadastrar
             </a>
 
         </div>
 
-        <!-- Mostrar quando estiver logado -->
         <div class="user-buttons" style="display: none;">
 
             <button class="btn saldo-btn">
@@ -78,7 +85,7 @@
 
             <span>
                 Já possui uma conta?
-                <a href="login.html">Entrar</a>
+                <a href="/login">Entrar</a>
             </span>
 
         </div>
@@ -91,10 +98,10 @@
             o nome BolsoBet vem da palavra "bolso" e sua relação metaforica com questões monetarias.
         </label>
         <div class="lateral">
-            <a class="anexo" href="termos.html">
+            <a class="anexo" href="/termos">
                 termos do site
             </a>
-            <a class="anexo" href="assets/model/jogos.zip">
+            <a class="anexo" href="/static/assets/model/jogos.zip">
                 Código Base dos jogos
             </a>
         </div>
