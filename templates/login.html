@@ -27,11 +27,30 @@
 
     <div class="navbar-right">
 
-        <button class="icon-btn" id="sound-btn" title="Som">
-            🔊
-        </button>
+        <button class="icon-btn" id="sound-btn">🔊</button>
 
-        <!-- Mostrar quando NÃO estiver logado -->
+        {% if "usuario_id" in session %}
+
+        <div class="user-buttons">
+
+            <form action="/deposito" method="GET">
+                <button class="btn saldo-btn">
+                    💰 R$ {{ "%.2f"|format(session["saldo"]) }}
+                </button>
+            </form>
+
+            <button class="btn perfil-btn">
+                👤 {{ session["nome"] }}
+            </button>
+
+            <a href="/logout" class="btn btn-login">
+                Sair
+            </a>
+
+        </div>
+
+        {% else %}
+
         <div class="guest-buttons">
 
             <a href="/login" class="btn btn-login">
@@ -44,18 +63,7 @@
 
         </div>
 
-        <!-- Mostrar quando estiver logado -->
-        <div class="user-buttons" style="display: none;">
-
-            <button class="btn saldo-btn">
-                💰
-            </button>
-
-            <button class="btn perfil-btn">
-                👤
-            </button>
-
-        </div>
+        {% endif %}
 
     </div>
 

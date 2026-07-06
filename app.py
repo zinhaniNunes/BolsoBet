@@ -17,26 +17,29 @@ def conectar():
 # Página inicial
 @app.route("/")
 def home():
+    print("Sessão na home:", session)
 
     if "usuario_id" not in session:
+        print("Usuário NÃO está logado")
         return render_template("home.html")
+
+    print("Usuário está logado")
 
     con = conectar()
     cursor = con.cursor()
 
     cursor.execute(
-        "SELECT saldo FROM usuarios WHERE id=?",
+        "SELECT nome, saldo FROM usuarios WHERE id=?",
         (session["usuario_id"],)
     )
 
-    saldo = cursor.fetchone()[0]
-
+    usuario = cursor.fetchone()
     con.close()
 
-    return render_template(
-        "home.html",
-        saldo=saldo
-    )
+    session["nome"] = usuario[0]
+    session["saldo"] = usuario[1]
+
+    return render_template("home.html")
 
 
 # Página de login
@@ -47,6 +50,15 @@ def login():
 @app.route("/games/tigrinho")
 def tigrinho():
     return render_template("games/Tigrinho.html")
+
+#Página de depósito
+@app.route("/deposito")
+def deposito():
+
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+
+    return render_template("deposito.html")
 
 # Página de cadastro
 @app.route("/register")
@@ -129,7 +141,10 @@ def entrar():
         session["nome"] = usuario[1]
         session["saldo"] = usuario[4]
 
+        print("\033[32mSession atualizada:\033[0m", session)
+
         return redirect(url_for("home"))
+
     else:
         flash("Email ou senha incorretos.")
         return redirect(url_for("login"))
@@ -138,6 +153,40 @@ def entrar():
 def logout():
     session.clear()
     return redirect(url_for("login"))
+
+#add credit to the user
+@app.route("/depositar", methods=["POST"])
+def depositar():
+
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+
+    valor = float(request.form["valor"])
+
+    con = conectar()
+    cursor = con.cursor()
+
+    cursor.execute("""
+        UPDATE usuarios
+        SET saldo = saldo + ?
+        WHERE id = ?
+    """, (valor, session["usuario_id"]))
+
+    con.commit()
+
+    cursor.execute("""
+        SELECT saldo
+        FROM usuarios
+        WHERE id = ?
+    """, (session["usuario_id"],))
+
+    session["saldo"] = cursor.fetchone()[0]
+
+    con.close()
+
+    flash("Crédito adicionado com sucesso!")
+
+    return redirect(url_for("home"))
 
 
 if __name__ == "__main__":

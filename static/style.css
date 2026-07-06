@@ -432,3 +432,11 @@ body{
     white-space: nowrap;
     color: #eeeeeec4;
 }
+
+.user-buttons {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
