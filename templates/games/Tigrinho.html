@@ -7,11 +7,26 @@
     <link rel="icon" type="image/svg+xml" href="/static/assets/logo.svg">
     <link rel="stylesheet" href="/static/style.css">
     <script>
-    const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
 
-    if (!usuario) {
-        window.location.href = "/templates/login.html";
+    const simbolos = [
+        "🍒","🍊","🪙","🧧","🪭",
+        "🥁","👑","💎","⭐","🐯"
+    ];
+
+    function emojiAleatorio(){
+        return simbolos[Math.floor(Math.random() * simbolos.length)];
     }
+
+    const casas = document.querySelectorAll(".linha span");
+
+    function embaralhar(){
+        casas.forEach(casa=>{
+            casa.textContent = emojiAleatorio();
+        });
+    }
+
+    setInterval(embaralhar, 100);
+
     </script>
 </head>
 
@@ -27,8 +42,6 @@
     <div class="navbar-right">
 
         <button class="icon-btn" id="sound-btn">🔊</button>
-
-        {% if "usuario_id" in session %}
 
         <div class="user-buttons">
 
@@ -48,28 +61,57 @@
 
         </div>
 
-        {% else %}
-
-        <div class="guest-buttons">
-
-            <a href="/login" class="btn btn-login">
-                Entrar
-            </a>
-
-            <a href="/register" class="btn btn-register">
-                Cadastrar
-            </a>
-
-        </div>
-
-        {% endif %}
-
     </div>
 
     </header>
 
     <main>
+        {% if "usuario_id" in session %}
+                <div class="slot-machine">
 
+                    <div id="matriz">
+
+                        <div class="linha">
+                            <span>❔</span><span>❔</span><span>❔</span><span>❔</span><span>❔</span>
+                        </div>
+
+                        <div class="linha">
+                            <span>❔</span><span>❔</span><span>❔</span><span>❔</span><span>❔</span>
+                        </div>
+
+                        <div class="linha">
+                            <span>❔</span><span>❔</span><span>❔</span><span>❔</span><span>❔</span>
+                        </div>
+
+                        <div class="linha">
+                            <span>❔</span><span>❔</span><span>❔</span><span>❔</span><span>❔</span>
+                        </div>
+
+                        <div class="linha">
+                            <span>❔</span><span>❔</span><span>❔</span><span>❔</span><span>❔</span>
+                        </div>
+
+                    </div>
+
+                    <br>
+
+                    <input
+                        id="aposta"
+                        type="number"
+                        value="1"
+                        min="0.4"
+                        step="0.1">
+
+                    <button id="girar">
+                        GIRAR
+                    </button>
+
+                </div>
+        {% else %}
+            <script>
+                location.replace("/login");
+            </script>
+        {% endif %}
 
 
     </main>

@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from pathlib import Path
+from flask import jsonify
 import sqlite3
 import hashlib
 import secrets
+import tigrinho
 
 app = Flask(__name__)
 BASE_DIR = Path(__file__).resolve().parent
@@ -17,13 +19,9 @@ def conectar():
 # Página inicial
 @app.route("/")
 def home():
-    print("Sessão na home:", session)
 
     if "usuario_id" not in session:
-        print("Usuário NÃO está logado")
         return render_template("home.html")
-
-    print("Usuário está logado")
 
     con = conectar()
     cursor = con.cursor()
@@ -47,9 +45,68 @@ def home():
 def login():
     return render_template("login.html")
 
+#jogos
 @app.route("/games/tigrinho")
-def tigrinho():
+def pagina_tigrinho():
     return render_template("games/Tigrinho.html")
+@app.route("/spin", methods=["POST"])
+def spin():
+
+    # Verifica se está logado
+    if "usuario_id" not in session:
+        return jsonify({"erro": "Faça login"}), 401
+
+    aposta = float(request.json["aposta"])
+
+    # Conecta ao banco
+    con = conectar()
+    cursor = con.cursor()
+
+    # Busca o saldo do usuário
+    cursor.execute("""
+        SELECT saldo
+        FROM usuarios
+        WHERE id = ?
+    """, (session["usuario_id"],))
+
+    saldo = cursor.fetchone()[0]
+
+    # Verifica se a aposta é válida
+    if aposta <= 0:
+        con.close()
+        return jsonify({"erro": "Aposta inválida"}), 400
+
+    if aposta > saldo:
+        con.close()
+        return jsonify({"erro": "Saldo insuficiente"}), 400
+
+    # Executa o jogo
+    resultado = tigrinho.jogar(aposta)
+
+    # Atualiza o saldo
+    saldo = saldo - aposta
+    saldo += resultado["ganho"]
+
+    # Salva no banco
+    cursor.execute("""
+        UPDATE usuarios
+        SET saldo = ?
+        WHERE id = ?
+    """, (saldo, session["usuario_id"]))
+
+    con.commit()
+    con.close()
+
+    # Atualiza a sessão
+    session["saldo"] = saldo
+
+    # Envia o resultado para a página
+    return jsonify({
+        "matriz": resultado["matriz"],
+        "ganho": resultado["ganho"],
+        "spin_bonus": resultado["spin_bonus"],
+        "saldo": saldo
+    })
 
 #Página de depósito
 @app.route("/deposito")
@@ -64,7 +121,6 @@ def deposito():
 @app.route("/register")
 def register():
     return render_template("register.html")
-
 
 # Receber cadastro
 @app.route("/cadastrar", methods=["POST"])
@@ -141,7 +197,7 @@ def entrar():
         session["nome"] = usuario[1]
         session["saldo"] = usuario[4]
 
-        print("\033[32mSession atualizada:\033[0m", session)
+        print("\033[32mUsuário logado:\033[0m", session["nome"])
 
         return redirect(url_for("home"))
 
