@@ -6,28 +6,6 @@
     <title>BolsoBet</title>
     <link rel="icon" type="image/svg+xml" href="/static/assets/logo.svg">
     <link rel="stylesheet" href="/static/style.css">
-    <script>
-
-    const simbolos = [
-        "🍒","🍊","🪙","🧧","🪭",
-        "🥁","👑","💎","⭐","🐯"
-    ];
-
-    function emojiAleatorio(){
-        return simbolos[Math.floor(Math.random() * simbolos.length)];
-    }
-
-    const casas = document.querySelectorAll(".linha span");
-
-    function embaralhar(){
-        casas.forEach(casa=>{
-            casa.textContent = emojiAleatorio();
-        });
-    }
-
-    setInterval(embaralhar, 100);
-
-    </script>
 </head>
 
 <body>
@@ -41,18 +19,16 @@
 
     <div class="navbar-right">
 
-        <button class="icon-btn" id="sound-btn">🔊</button>
-
         <div class="user-buttons">
 
             <form action="/deposito" method="GET">
                 <button class="btn saldo-btn">
-                    💰 R$ {{ "%.2f"|format(session["saldo"]) }}
+                     R$ {{ "%.2f"|format(session["saldo"]) }}
                 </button>
             </form>
 
             <button class="btn perfil-btn">
-                👤 {{ session["nome"] }}
+                 {{ session["nome"] }}
             </button>
 
             <a href="/logout" class="btn btn-login">
@@ -65,48 +41,44 @@
 
     </header>
 
-    <main>
+    <main class="container">
         {% if "usuario_id" in session %}
-                <div class="slot-machine">
+            <div class="slot-machine">
 
-                    <div id="matriz">
+                <!-- Máquina -->
+                <div id="matriz">
 
-                        <div class="linha">
-                            <span>❔</span><span>❔</span><span>❔</span><span>❔</span><span>❔</span>
-                        </div>
-
-                        <div class="linha">
-                            <span>❔</span><span>❔</span><span>❔</span><span>❔</span><span>❔</span>
-                        </div>
-
-                        <div class="linha">
-                            <span>❔</span><span>❔</span><span>❔</span><span>❔</span><span>❔</span>
-                        </div>
-
-                        <div class="linha">
-                            <span>❔</span><span>❔</span><span>❔</span><span>❔</span><span>❔</span>
-                        </div>
-
-                        <div class="linha">
-                            <span>❔</span><span>❔</span><span>❔</span><span>❔</span><span>❔</span>
-                        </div>
-
+                    {% for i in range(5) %}
+                    <div class="linha">
+                        {% for j in range(5) %}
+                        <span>🐯</span>
+                        {% endfor %}
                     </div>
-
-                    <br>
-
-                    <input
-                        id="aposta"
-                        type="number"
-                        value="1"
-                        min="0.4"
-                        step="0.1">
-
-                    <button id="girar">
-                        GIRAR
-                    </button>
+                    {% endfor %}
 
                 </div>
+
+                <div class="controles">
+                    <!-- Informações -->
+                        <div class="info-jogo">
+
+                            <p>
+                                🎰 Spins restantes:
+                                <span id="spins">0</span>
+                                🎰
+                            </p>
+
+                            <p id="mensagem"></p>
+
+                        </div>
+
+                    <!-- Controles -->
+                        <input class="campo" id="aposta" type="number" value="1.00" min="0.40" step="0.10">
+                        <input class="campo"id="comprar-spins" type="number" value="10" min="1">
+                        <button id="girar">GIRAR</button>
+                        </div>
+                </div>        
+            </div>
         {% else %}
             <script>
                 location.replace("/login");
@@ -115,6 +87,8 @@
 
 
     </main>
+
+<script src="{{ url_for('static', filename='tigrinho.js') }}"></script>
 
 </body>
 

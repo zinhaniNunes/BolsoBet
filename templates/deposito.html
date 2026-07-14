@@ -19,20 +19,18 @@
 
     <div class="navbar-right">
 
-        <button class="icon-btn" id="sound-btn">🔊</button>
-
         {% if "usuario_id" in session %}
 
         <div class="user-buttons">
 
             <form action="/deposito" method="GET">
                 <button class="btn saldo-btn">
-                    💰 R$ {{ "%.2f"|format(session["saldo"]) }}
+                     R$ {{ "%.2f"|format(session["saldo"]) }}
                 </button>
             </form>
 
             <button class="btn perfil-btn">
-                👤 {{ session["nome"] }}
+                 {{ session["nome"] }}
             </button>
 
             <a href="/logout" class="btn btn-login">
@@ -68,7 +66,7 @@
         <input
             type="number"
             name="valor"
-            min="1"
+            min="10"
             step="0.01"
             required
         >

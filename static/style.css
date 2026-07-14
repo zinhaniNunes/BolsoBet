@@ -446,7 +446,6 @@ body{
     flex-direction:column;
     align-items:center;
     gap:20px;
-    margin-top:40px;
 }
 
 #matriz{
@@ -455,7 +454,7 @@ body{
     gap:8px;
     padding:20px;
     border-radius:15px;
-    background:#2a2a2a;
+    background:#0F1825;
 }
 
 .linha{
@@ -464,15 +463,61 @@ body{
 }
 
 .linha span{
-    width:70px;
-    height:70px;
+    width:100px;
+    height:100px;
 
     display:flex;
     justify-content:center;
     align-items:center;
 
-    background:#444;
+    background:#182437;
     border-radius:10px;
 
     font-size:42px;
 }   
+
+.controles{
+    padding:20px;
+    border-radius:15px;
+    gap:10px;
+    background:#0F1825;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.info-jogo{
+    color:var(--text)
+}
+
+.campo{
+    border: none;
+    border-radius: 8px;
+    background-color: #182437;
+    color: #ffffffc5;
+    padding: 8px 12px;
+    font-size: 14px;
+    outline: none;
+}
+
+/* Remove spinners em todos os navegadores */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* Remove spinners no firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+

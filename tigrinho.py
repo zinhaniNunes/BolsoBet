@@ -2,11 +2,10 @@
 import random
 
 #variaveis
-#saldo vem do banco de dados
 simbolos = ["🍒","🍊","🪙","🧧","🪭","🥁","👑","💎","⭐","🐯"]
 pesos = [40,30,22,16,11,7,3,0.8,0.15,0.05]
 premios = {
-    "🍒": {3: 0.40, 4: 0.60, 5: 0.69},
+    "🍒": {3: 0.35, 4: 0.40, 5: 0.60},
     "🍊": {3: 0.50, 4: 0.65, 5: 0.90},
     "🪙": {3: 0.55, 4: 0.70, 5: 1.50},
     "🧧": {3: 0.50, 4: 1.00, 5: 2.20},
@@ -157,5 +156,3 @@ def jogar(aposta):
         "ganho": ganho * aposta,
         "spin_bonus": spin_bonus
     }
-
-#volta o saldo para o banco
