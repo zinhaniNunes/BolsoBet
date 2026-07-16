@@ -4,6 +4,7 @@ const simbolos = [
 ];
 
 const casas = document.querySelectorAll(".linha span");
+const comprarSpins = document.getElementById("comprar_spins");
 const botao = document.getElementById("girar");
 const aposta = document.getElementById("aposta");
 
@@ -19,15 +20,17 @@ function embaralhar() {
 
 function mostrarResultado(matriz) {
 
+    if (!Array.isArray(matriz)) {
+        console.error("Matriz inválida:", matriz);
+        return;
+    }
+
     let indice = 0;
 
     matriz.forEach(linha => {
         linha.forEach(simbolo => {
-
             casas[indice].textContent = simbolo;
-
             indice++;
-
         });
     });
 
@@ -37,68 +40,82 @@ botao.addEventListener("click", async () => {
 
     botao.disabled = true;
 
-    const animacao = setInterval(embaralhar, 50);
+    let animacao = setInterval(embaralhar, 50);
 
     try {
-
         const resposta = await fetch("/spin", {
-
             method: "POST",
-
             headers: {
                 "Content-Type": "application/json"
             },
-
             body: JSON.stringify({
-                aposta: parseFloat(aposta.value)
+                aposta: parseFloat(aposta.value),
+                comprar_spins: comprarSpins ? parseInt(comprarSpins.value) : 1
             })
-
         });
 
         const resultado = await resposta.json();
 
-        // espera 2 segundos antes de parar
+        if (!resposta.ok) {
+            alert(resultado.erro);
+            botao.disabled = false;
+            clearInterval(animacao);
+            return;
+        }
+
         setTimeout(() => {
 
             clearInterval(animacao);
 
-            mostrarResultado(resultado.matriz);
+            let i = 0;
 
-            const saldoBtn = document.querySelector(".saldo-btn");
+            function proximaSpin() {
 
-            if (saldoBtn) {
-                saldoBtn.innerHTML = `💰 R$ ${resultado.saldo.toFixed(2)}`;
+                if (i >= resultado.resultados.length) {
+                    botao.disabled = false;
+                    return;
+                }
+
+                // Mostra o resultado da spin atual
+                mostrarResultado(resultado.resultados[i].matriz);
+
+                i++;
+
+                // Espera 1 segundo mostrando o resultado
+                setTimeout(() => {
+
+                    // Se ainda houver outra spin, faz a animação novamente
+                    if (i < resultado.resultados.length) {
+
+                        animacao = setInterval(embaralhar, 50);
+
+                        setTimeout(() => {
+
+                            clearInterval(animacao);
+
+                            proximaSpin();
+
+                        }, 1000);
+
+                    } else {
+
+                        botao.disabled = false;
+
+                    }
+
+                }, 1000);
+
             }
+
+            proximaSpin();
 
         }, 1000);
 
-        // Atualiza o botão de saldo
-        const saldoBtn = document.querySelector(".saldo-btn");
-
-        if (saldoBtn) {
-            saldoBtn.innerHTML = `💰 R$ ${resultado.saldo.toFixed(2)}`;
-        }
-
-        // Se ganhou dinheiro
-        if (resultado.ganho > 0) {
-            console.log("Ganhou R$", resultado.ganho);
-        }
-
-        // Se ganhou spins
-        if (resultado.spin_bonus > 0) {
-            console.log("Ganhou", resultado.spin_bonus, "spins bônus");
-        }
-
     } catch (erro) {
-
-        clearInterval(animacao);
-
         console.error(erro);
-
-        alert("Erro ao conectar com o servidor.");
-
+        botao.disabled = false;
+        clearInterval(animacao);
+        alert("Erro ao comunicar com o servidor.");
     }
-
-    botao.disabled = false;
 
 });

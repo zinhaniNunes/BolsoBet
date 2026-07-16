@@ -488,6 +488,8 @@ body{
 }
 
 .container {
+    margin-top: 1%;
+    margin-bottom: 3%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -521,3 +523,14 @@ input[type="number"] {
     appearance: textfield;
 }
 
+.tiger-image{
+    width: 600px;
+    height: auto;
+}
+
+.tigrinho-body{
+    background-image: url("/static/assets/imgs/fundo_tiger.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}

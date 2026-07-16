@@ -58,7 +58,8 @@ def spin():
         return jsonify({"erro": "Faça login"}), 401
 
     aposta = float(request.json["aposta"])
-    spins = int(request.json["comprar-spins"])
+    print(request.json)
+    spins = int(request.json["comprar_spins"])
 
     # Conecta ao banco
     con = conectar()
