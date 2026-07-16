@@ -25,46 +25,6 @@
         <span class="logo-text">BolsoBet</span>
     </a>
 
-    <div class="navbar-right">
-
-        {% if "usuario_id" in session %}
-
-        <div class="user-buttons">
-
-            <form action="/deposito" method="GET">
-                <button class="btn saldo-btn">
-                     R$ {{ "%.2f"|format(session["saldo"]) }}
-                </button>
-            </form>
-
-            <button class="btn perfil-btn">
-                 {{ session["nome"] }}
-            </button>
-
-            <a href="/logout" class="btn btn-login">
-                Sair
-            </a>
-
-        </div>
-
-        {% else %}
-
-        <div class="guest-buttons">
-
-            <a href="/login" class="btn btn-login">
-                Entrar
-            </a>
-
-            <a href="/register" class="btn btn-register">
-                Cadastrar
-            </a>
-
-        </div>
-
-        {% endif %}
-
-    </div>
-
     </header>
 
     <main class="login-page">

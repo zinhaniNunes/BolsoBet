@@ -23,7 +23,7 @@
 
             <form action="/deposito" method="GET">
                 <button class="btn saldo-btn">
-                     R$ {{ "%.2f"|format(session["saldo"]) }}
+                     R$ {{ "%.2f"|format(session["saldo"])|replace(".", ",") }}
                 </button>
             </form>
 
@@ -63,18 +63,16 @@
                         <div class="info-jogo">
 
                             <p>
-                                🎰 Spins restantes:
-                                <span id="spins">0</span>
+                                🎰 saldo restantes:
+                                <span id="saldo">R$ {{ "%.2f"|format(session["saldo"])|replace(".", ",") }}</span>
                                 🎰
                             </p>
 
                             <p id="mensagem"></p>
 
-                        </div>
-
-                    <!-- Controles -->
-                        <input class="campo" id="aposta" type="number" value="1.00" min="0.40" step="0.10">
-                        <input class="campo"id="comprar_spins" type="number" value="10" min="1">
+                        </div><!-- Controles -->
+                        <input class="campo" id="aposta" type="number" min="0.40" step="0.10" placeholder="Aposta (R$) minimo R$0,40">
+                        <input class="campo"id="comprar_spins" type="number" min="1" placeholder="Comprar Spins">
                         <button id="girar">GIRAR</button>
                         </div>
                 </div>        

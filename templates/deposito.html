@@ -25,7 +25,7 @@
 
             <form action="/deposito" method="GET">
                 <button class="btn saldo-btn">
-                     R$ {{ "%.2f"|format(session["saldo"]) }}
+                     R$ {{ "%.2f"|format(session["saldo"])|replace(".", ",") }}
                 </button>
             </form>
 
