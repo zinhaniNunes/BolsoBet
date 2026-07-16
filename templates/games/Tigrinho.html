@@ -42,7 +42,6 @@
     </header>
 
     <main class="container">
-        {% if "usuario_id" in session %}
             <div class="slot-machine">
 
                 <!-- Máquina -->
@@ -79,13 +78,6 @@
                         </div>
                 </div>        
             </div>
-        {% else %}
-            <script>
-                location.replace("/login");
-            </script>
-        {% endif %}
-
-
     </main>
 
 <script src="{{ url_for('static', filename='tigrinho.js') }}"></script>

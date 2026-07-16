@@ -49,6 +49,7 @@ def login():
 @app.route("/games/tigrinho")
 def pagina_tigrinho():
     return render_template("games/Tigrinho.html")
+
 @app.route("/spin", methods=["POST"])
 def spin():
 
@@ -57,12 +58,13 @@ def spin():
         return jsonify({"erro": "Faça login"}), 401
 
     aposta = float(request.json["aposta"])
+    spins = int(request.json["comprar-spins"])
 
     # Conecta ao banco
     con = conectar()
     cursor = con.cursor()
 
-    # Busca o saldo do usuário
+    # Busca o saldo
     cursor.execute("""
         SELECT saldo
         FROM usuarios
@@ -71,21 +73,42 @@ def spin():
 
     saldo = cursor.fetchone()[0]
 
-    # Verifica se a aposta é válida
+    # Validações
     if aposta <= 0:
         con.close()
         return jsonify({"erro": "Aposta inválida"}), 400
 
-    if aposta > saldo:
+    if spins <= 0:
+        con.close()
+        return jsonify({"erro": "Quantidade de spins inválida"}), 400
+
+    custo = aposta * spins
+
+    if saldo < custo:
         con.close()
         return jsonify({"erro": "Saldo insuficiente"}), 400
 
-    # Executa o jogo
-    resultado = tigrinho.jogar(aposta)
+    # Cobra todas as spins antecipadamente
+    saldo -= custo
 
-    # Atualiza o saldo
-    saldo = saldo - aposta
-    saldo += resultado["ganho"]
+    resultados = []
+    ganho_total = 0
+
+    while spins > 0:
+
+        spins -= 1
+
+        resultado = tigrinho.jogar(aposta)
+
+        ganho_total += resultado["ganho"]
+
+        # adiciona spins bônus
+        spins += resultado["spin_bonus"]
+
+        resultados.append(resultado)
+
+    # Soma os ganhos ao saldo
+    saldo += ganho_total
 
     # Salva no banco
     cursor.execute("""
@@ -97,14 +120,11 @@ def spin():
     con.commit()
     con.close()
 
-    # Atualiza a sessão
     session["saldo"] = saldo
 
-    # Envia o resultado para a página
     return jsonify({
-        "matriz": resultado["matriz"],
-        "ganho": resultado["ganho"],
-        "spin_bonus": resultado["spin_bonus"],
+        "resultados": resultados,
+        "ganho_total": ganho_total,
         "saldo": saldo
     })
 
