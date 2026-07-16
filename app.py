@@ -50,6 +50,12 @@ def login():
 def pagina_tigrinho():
     return render_template("games/Tigrinho.html")
 
+@app.route("/saldo")
+def saldo():
+    return {
+        "saldo": session["saldo"]
+    }
+
 @app.route("/spin", methods=["POST"])
 def spin():
 

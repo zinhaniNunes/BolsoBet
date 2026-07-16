@@ -8,6 +8,19 @@ const comprarSpins = document.getElementById("comprar_spins");
 const botao = document.getElementById("girar");
 const aposta = document.getElementById("aposta");
 
+async function atualizarSaldo() {
+
+    const resposta = await fetch("/saldo");
+    const dados = await resposta.json();
+
+    const saldo = dados.saldo.toFixed(2).replace(".", ",");
+
+    document.querySelectorAll(".saldo").forEach(elemento => {
+        elemento.textContent = saldo;
+    });
+
+}
+
 function emojiAleatorio() {
     return simbolos[Math.floor(Math.random() * simbolos.length)];
 }
@@ -69,15 +82,16 @@ botao.addEventListener("click", async () => {
 
             let i = 0;
 
-            function proximaSpin() {
+            async function proximaSpin() {
 
                 if (i >= resultado.resultados.length) {
                     botao.disabled = false;
                     return;
                 }
 
-                // Mostra o resultado da spin atual
                 mostrarResultado(resultado.resultados[i].matriz);
+
+                await atualizarSaldo();
 
                 i++;
 
@@ -87,17 +101,17 @@ botao.addEventListener("click", async () => {
                     // Se ainda houver outra spin, faz a animação novamente
                     if (i < resultado.resultados.length) {
 
-                        animacao = setInterval(embaralhar, 50);
+                    animacao = setInterval(embaralhar, 50);
 
-                        setTimeout(() => {
+                    setTimeout(() => {
 
-                            clearInterval(animacao);
+                        clearInterval(animacao);
 
-                            proximaSpin();
+                        proximaSpin();
 
-                        }, 1000);
+                    }, 1000);
 
-                    } else {
+                } else {
 
                         botao.disabled = false;
 
