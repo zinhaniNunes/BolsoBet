@@ -91,7 +91,7 @@ botao.addEventListener("click", async () => {
 
                 mostrarResultado(resultado.resultados[i].matriz);
 
-                await atualizarSaldo();
+                atualizarSaldo();
 
                 i++;
 
