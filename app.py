@@ -64,7 +64,6 @@ def spin():
         return jsonify({"erro": "Faça login"}), 401
 
     aposta = float(request.json["aposta"])
-    print(request.json)
     spins = int(request.json["comprar_spins"])
 
     # Conecta ao banco
@@ -100,6 +99,7 @@ def spin():
 
     resultados = []
     ganho_total = 0
+    lista_ganho = []
 
     while spins > 0:
 
@@ -132,7 +132,8 @@ def spin():
     return jsonify({
         "resultados": resultados,
         "ganho_total": ganho_total,
-        "saldo": saldo
+        "saldo": saldo,
+        "lista_ganho": lista_ganho
     })
 
 #Página de depósito
@@ -234,6 +235,7 @@ def entrar():
     
 @app.route("/logout")
 def logout():
+    print("\033[33mUsuário deslogado:\033[0m", session["nome"])
     session.clear()
     return redirect(url_for("login"))
 
