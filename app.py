@@ -99,23 +99,22 @@ def spin():
 
     resultados = []
     ganho_total = 0
-    lista_ganho = []
+    saldo_rodando = saldo  # já descontada a aposta
 
     while spins > 0:
-
         spins -= 1
 
         resultado = tigrinho.jogar(aposta)
 
         ganho_total += resultado["ganho"]
+        saldo_rodando += resultado["ganho"]      # <-- atualiza o saldo rodando ANTES de gravar
+        resultado["saldo"] = saldo_rodando       # agora reflete o saldo real após esse giro
 
-        # adiciona spins bônus
         spins += resultado["spin_bonus"]
-
         resultados.append(resultado)
 
-    # Soma os ganhos ao saldo
-    saldo += ganho_total
+    # saldo final = saldo_rodando (já tem aposta descontada + todos os ganhos somados)
+    saldo = saldo_rodando
 
     # Salva no banco
     cursor.execute("""
@@ -133,7 +132,6 @@ def spin():
         "resultados": resultados,
         "ganho_total": ganho_total,
         "saldo": saldo,
-        "lista_ganho": lista_ganho
     })
 
 #Página de depósito

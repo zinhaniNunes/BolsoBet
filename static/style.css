@@ -523,9 +523,16 @@ input[type="number"] {
     appearance: textfield;
 }
 
-.tiger-image{
-    width: 600px;
-    height: auto;
+.tiger-container {
+    display: flex;
+    align-items: flex-end;
+    width: 500px; /* Ajuste o tamanho conforme necessário */
+    height: 500px; /* Ajuste o tamanho conforme necessário */
+}
+
+.tiger-image {
+    width: 100%;
+    object-fit: contain;
 }
 
 .tigrinho-body{
