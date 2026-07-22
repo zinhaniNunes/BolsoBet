@@ -1,35 +1,48 @@
-const simbolos = [
-    "🍒", "🍊", "🪙", "🧧", "🪭",
-    "🥁", "👑", "💎", "⭐", "🐯"
-];
-
 const casas = document.querySelectorAll(".linha span");
+const primeiraLinha = document.querySelector(".linha");
+const colunasPorLinha = primeiraLinha ? primeiraLinha.children.length : 5;
+
 const comprarSpins = document.getElementById("comprar_spins");
 const botao = document.getElementById("girar");
 const aposta = document.getElementById("aposta");
 const tigerImg = document.getElementById("tiger-img");
 
-// ATENÇÃO: troque esses caminhos pelos arquivos de imagem que você
-// realmente tem em /static/assets/imgs/. São só nomes de exemplo.
-const IMAGENS_TIGRE = {
-    normal:  "/static/assets/imgs/tiger(neutro).png", // sem ganho
-    pequeno: "/static/assets/imgs/tiger(boa).png",    // ganho pequeno
-    medio:   "/static/assets/imgs/tiger(grito).png",  // ganho médio
-    grande:  "/static/assets/imgs/tiger(chora).png",     // ganho grande
-    mega:    "/static/assets/imgs/tiger(rico).png"      // ganho enorme
-};
+const simbolosAnimacao = [
+    "🍒", "🍊", "🪙", "🧧", "🪭", "🥁", "👑", "💎", "⭐", "🐯",
+    "🎲", "🃏", "🍀", "💰", "7️⃣"
+]; //<---pode separar para a animação n cruzar?
 
-// Define os limites de multiplicador para cada imagem.
-// "multiplicador" é o total de vezes a aposta ganho naquele giro (0 = sem ganho).
+// Os caminhos de cada estado do mascote vêm de data-attributes do
+// próprio <img id="tiger-img">, então esse mesmo slot.js serve pra
+// qualquer jogo (tigrinho, cassino, zeus, etc). Exemplo no HTML:
+//
+// <img id="tiger-img"
+//      src="/static/assets/imgs/tiger(neutro).png"
+//      data-img-pequeno="/static/assets/imgs/tiger(boa).png"
+//      data-img-medio="/static/assets/imgs/tiger(grito).png"
+//      data-img-grande="/static/assets/imgs/tiger(chora).png">
+const IMAGENS_TIGRE = tigerImg ? {
+    normal:  tigerImg.getAttribute("src"),
+    pequeno: tigerImg.dataset.imgPequeno || tigerImg.getAttribute("src"),
+    medio:   tigerImg.dataset.imgMedio   || tigerImg.getAttribute("src"),
+    grande:  tigerImg.dataset.imgGrande  || tigerImg.getAttribute("src"),
+} : null;
+const IMAGENS_CASSINO = cassinoImg ? {
+    normal:  cassinoImg.getAttribute("src"),
+    pequeno: cassinoImg.dataset.imgPequeno || cassinoImg.getAttribute("src"),
+    medio:   cassinoImg.dataset.imgMedio   || cassinoImg.getAttribute("src"),
+    grande:  cassinoImg.dataset.imgGrande  || cassinoImg.getAttribute("src"),
+} : null;
+
+// Define qual imagem do mascote mostrar de acordo com o multiplicador
+// ganho naquele giro (0 = sem ganho).
 function atualizarTigre(multiplicador) {
 
-    if (!tigerImg) return;
+    if (!tigerImg || !IMAGENS_TIGRE) return;
 
     let novaImagem = IMAGENS_TIGRE.normal;
 
-    if (multiplicador >= 15) {
-        novaImagem = IMAGENS_TIGRE.mega;
-    } else if (multiplicador >= 5) {
+    if (multiplicador >= 5) {
         novaImagem = IMAGENS_TIGRE.grande;
     } else if (multiplicador >= 2) {
         novaImagem = IMAGENS_TIGRE.medio;
@@ -74,7 +87,7 @@ function destacarGanhos(posicoes) {
     if (!Array.isArray(posicoes)) return;
 
     posicoes.forEach(([linha, coluna]) => {
-        const indice = linha * 5 + coluna;
+        const indice = linha * colunasPorLinha + coluna;
         const casa = casas[indice];
         if (casa) {
             casa.classList.add("casa-ganhou");
@@ -89,13 +102,13 @@ function atualizarSaldoLocal(saldo) {
     });
 }
 
-function emojiAleatorio() {
-    return simbolos[Math.floor(Math.random() * simbolos.length)];
+function simboloAleatorio() {
+    return simbolosAnimacao[Math.floor(Math.random() * simbolosAnimacao.length)];
 }
 
 function embaralhar() {
     casas.forEach(casa => {
-        casa.textContent = emojiAleatorio();
+        casa.textContent = simboloAleatorio();
     });
 }
 

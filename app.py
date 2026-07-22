@@ -5,8 +5,21 @@ import sqlite3
 import hashlib
 import secrets
 import tigrinho
+import slot_cassino
+# import slot_zeus, slot_egito, slot_pirata, slot_king, slot_brasil, slot_classic  # crie seguindo o mesmo padrão
 
 app = Flask(__name__)
+
+# Registro central: cada jogo é um módulo com uma função jogar(aposta)
+JOGOS = {
+    "tigrinho": tigrinho,
+    "fortune-cassino": slot_cassino,
+    # "pirate-fortune": slot_pirata,
+    # "zeus-fortune": slot_zeus,
+    # "cleopatra-fortune": slot_egito,
+    # "brasil-mega-wins": slot_brasil,
+    # "classic-slot": slot_classic,
+}
 BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "usuarios.db"
 app.secret_key = secrets.token_hex(32)
@@ -48,7 +61,59 @@ def login():
 #jogos
 @app.route("/games/tigrinho")
 def pagina_tigrinho():
+    session["jogo_atual"] = "tigrinho"
     return render_template("games/Tigrinho.html")
+
+@app.route("/games/fortune-cassino")
+def fortune_cassino():
+    session["jogo_atual"] = "fortune-cassino"
+    return render_template("games/slot-cassino.html")
+
+@app.route("/games/pirate-fortune")
+def pirate_fortune():
+    session["jogo_atual"] = "pirate-fortune"  # crie slot_pirata.py e registre em JOGOS
+    return render_template("games/slot-pirata.html")
+
+@app.route("/games/zeus-fortune")
+def zeus_fortune():
+    session["jogo_atual"] = "zeus-fortune"  # crie slot_zeus.py e registre em JOGOS
+    return render_template("games/slot-zeus.html")
+
+@app.route("/games/cleopatra-fortune")
+def cleopatra_fortune():
+    session["jogo_atual"] = "cleopatra-fortune"  # crie slot_egito.py e registre em JOGOS
+    return render_template("games/slot-egito.html")
+
+@app.route("/games/brasil-mega-wins")
+def brasil_mega_wins():
+    session["jogo_atual"] = "brasil-mega-wins"  # crie slot_brasil.py e registre em JOGOS
+    return render_template("games/slot-Brasil.html")
+
+@app.route("/games/classic-slot")
+def classic_slot():
+    session["jogo_atual"] = "classic-slot"  # crie slot_classic.py e registre em JOGOS
+    return render_template("games/slot-classic.html")
+
+@app.route("/games/fortune-king")
+def fortune_king():
+    session["jogo_atual"] = "fortune-king"  # crie slot_king.py e registre em JOGOS
+    return render_template("games/slot-fortune-King.html")
+
+@app.route("/games/21")
+def vinte_um():
+    return render_template("games/21.html")
+
+@app.route("/games/roleta")
+def roleta():
+    return render_template("games/roleta.html")
+
+@app.route("/games/fortune-mines")
+def fortune_mines():
+    return render_template("games/fortune-mines.html")
+
+@app.route("/games/aviator")
+def aviator():
+    return render_template("games/aviator.html")
 
 @app.route("/saldo")
 def saldo():
@@ -62,6 +127,10 @@ def spin():
     # Verifica se está logado
     if "usuario_id" not in session:
         return jsonify({"erro": "Faça login"}), 401
+
+    jogo = JOGOS.get(session.get("jogo_atual"))
+    if jogo is None:
+        return jsonify({"erro": "Jogo inválido ou sessão expirada"}), 400
 
     aposta = float(request.json["aposta"])
     spins = int(request.json["comprar_spins"])
@@ -104,7 +173,7 @@ def spin():
     while spins > 0:
         spins -= 1
 
-        resultado = tigrinho.jogar(aposta)
+        resultado = jogo.jogar(aposta)
 
         ganho_total += resultado["ganho"]
         saldo_rodando += resultado["ganho"]      # <-- atualiza o saldo rodando ANTES de gravar

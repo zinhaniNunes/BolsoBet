@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 
-<body class="tigrinho-body">
+<body class="cassino-body">
 
     <header class="navbar">
 
@@ -43,11 +43,14 @@
 
     <main class="container">
             <div class="mascote-container">
+                <!-- ATENÇÃO: ajuste esses caminhos pros arquivos que você
+                     realmente tem em /static/assets/imgs/. São nomes de exemplo,
+                     seguindo o mesmo padrão do tigrinho (neutra/pequeno/médio/grande). -->
                 <img id="tiger-img"
-                     src="/static/assets/imgs/tiger(neutro).png"
-                     data-img-pequeno="/static/assets/imgs/tiger(boa).png"
-                     data-img-medio="/static/assets/imgs/tiger(grito).png"
-                     data-img-grande="/static/assets/imgs/tiger(chora).png"
+                     src="/static/assets/imgs/garçonete(neutra).png"
+                     data-img-pequeno="/static/assets/imgs/garçonete(feliz).png"
+                     data-img-medio="/static/assets/imgs/garçonete(comemorando).png"
+                     data-img-grande="/static/assets/imgs/garçonete(explosao).png"
                      alt="Tigrinho" class="tiger-image">
             </div>
             <div class="slot-machine">
@@ -55,10 +58,10 @@
                 <!-- Máquina -->
                 <div id="matriz">
 
-                    {% for i in range(5) %}
+                    {% for i in range(3) %}
                     <div class="linha">
                         {% for j in range(5) %}
-                        <span>🐯</span>
+                        <span>7️⃣</span>
                         {% endfor %}
                     </div>
                     {% endfor %}

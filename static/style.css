@@ -252,7 +252,7 @@ body{
     padding: 1%;
     border-radius: 25px;
     width: 90%;
-    height: 1520px;
+    height: 1640px;
 }
 
 .card{
@@ -523,7 +523,7 @@ input[type="number"] {
     appearance: textfield;
 }
 
-.tiger-container {
+.mascote-container {
     display: flex;
     align-items: flex-end;
     width: 500px; /* Ajuste o tamanho conforme necessário */
@@ -537,6 +537,13 @@ input[type="number"] {
 
 .tigrinho-body{
     background-image: url("/static/assets/imgs/fundo_tiger.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.cassino-body{
+    background-image: url("/static/assets/imgs/fundo_cassino.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
