@@ -1,7 +1,7 @@
 import slot_engine as engine
 
 CONFIG = {
-    "linhas": 3,
+    "linhas": 4,
     "colunas": 5,
     "simbolos": ["🛡️","⚔️","🏹","🪙","🏰","👑"],
     "pesos":    [35, 26, 19, 12, 6, 2],

@@ -77,50 +77,50 @@ def fortune_cassino():
     session["jogo_atual"] = "fortune-cassino"
     return render_template("games/slot-cassino.html")
 
-@app.route("/games/pirate-fortune")
+@app.route("/games/slot-pirata")
 def pirate_fortune():
-    session["jogo_atual"] = "pirate-fortune"  # crie slot_pirata.py e registre em JOGOS
+    session["jogo_atual"] = "slot-pirata"
     return render_template("games/slot-pirata.html")
 
-@app.route("/games/zeus-fortune")
+@app.route("/games/slot-zeus")
 def zeus_fortune():
-    session["jogo_atual"] = "zeus-fortune"  # crie slot_zeus.py e registre em JOGOS
+    session["jogo_atual"] = "slot-zeus"
     return render_template("games/slot-zeus.html")
 
-@app.route("/games/cleopatra-fortune")
+@app.route("/games/slot-egito")
 def cleopatra_fortune():
-    session["jogo_atual"] = "cleopatra-fortune"  # crie slot_egito.py e registre em JOGOS
+    session["jogo_atual"] = "slot-egito"
     return render_template("games/slot-egito.html")
 
-@app.route("/games/brasil-mega-wins")
+@app.route("/games/slot-brasil")
 def brasil_mega_wins():
-    session["jogo_atual"] = "brasil-mega-wins"  # crie slot_brasil.py e registre em JOGOS
-    return render_template("games/slot-Brasil.html")
+    session["jogo_atual"] = "slot-brasil"
+    return render_template("games/slot-brasil.html")
 
-@app.route("/games/classic-slot")
+@app.route("/games/slot-classic")
 def classic_slot():
-    session["jogo_atual"] = "classic-slot"  # crie slot_classic.py e registre em JOGOS
+    session["jogo_atual"] = "slot-classic"
     return render_template("games/slot-classic.html")
 
-@app.route("/games/fortune-king")
+@app.route("/games/slot-king")
 def fortune_king():
-    session["jogo_atual"] = "fortune-king"  # crie slot_king.py e registre em JOGOS
-    return render_template("games/slot-fortune-King.html")
+    session["jogo_atual"] = "slot-king"
+    return render_template("games/slot-king.html")
 
 @app.route("/games/21")
-def vinte_um():
+def vinte_um(): #tenho que criar o jogo 21.py e registrar em JOGOS
     return render_template("games/21.html")
 
 @app.route("/games/roleta")
-def roleta():
+def roleta(): #tenho que criar o jogo roleta.py e registrar em JOGOS
     return render_template("games/roleta.html")
 
 @app.route("/games/fortune-mines")
-def fortune_mines():
+def fortune_mines(): #tenho que criar o jogo fortune-mines.py e registrar em JOGOS
     return render_template("games/fortune-mines.html")
 
 @app.route("/games/aviator")
-def aviator():
+def aviator(): #tenho que criar o jogo aviator.py e registrar em JOGOS
     return render_template("games/aviator.html")
 
 @app.route("/saldo")

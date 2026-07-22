@@ -3,7 +3,7 @@ import slot_engine as engine
 CONFIG = {
     "linhas": 3,
     "colunas": 5,
-    simbolos = ["☠️","🦜","🗺️","🪙","🏝️","🪎"],
+    "simbolos": ["☠️","🦜","🗺️","🪙","🏝️","🪎"],
     "pesos":    [35, 26, 19, 12, 6, 2],
     "premios": {
         "☠️": {3: 0.30, 4: 0.50, 5: 1.00},

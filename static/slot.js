@@ -8,26 +8,11 @@ const botao = document.getElementById("girar");
 const aposta = document.getElementById("aposta");
 const mascoteImg = document.getElementById("mascote-img");
 
-// Símbolos usados só na animação de embaralhar enquanto espera a
-// resposta do servidor (efeito visual, não é o resultado real do
-// giro). Vêm de um data-attribute no próprio #matriz, então cada jogo
-// usa só os símbolos do seu tema, sem cruzar com os outros. Exemplo:
-//
-// <div id="matriz" data-simbolos="🍒,🍊,🪙,🧧,🪭,🥁,👑,💎,⭐,🐯">
 const FALLBACK_SIMBOLOS = ["🍒", "⭐", "💎"];
 const simbolosAnimacao = matrizEl?.dataset.simbolos
     ? matrizEl.dataset.simbolos.split(",")
     : FALLBACK_SIMBOLOS;
 
-// Os caminhos de cada estado do mascote vêm de data-attributes do
-// próprio <img id="mascote-img">, então esse mesmo slot.js serve pra
-// qualquer jogo (tigrinho, cassino, zeus, etc). Exemplo no HTML:
-//
-// <img id="mascote-img"
-//      src="/static/assets/imgs/tiger(neutro).png"
-//      data-img-pequeno="/static/assets/imgs/tiger(boa).png"
-//      data-img-medio="/static/assets/imgs/tiger(grito).png"
-//      data-img-grande="/static/assets/imgs/tiger(chora).png">
 const IMAGENS_MASCOTE = mascoteImg ? {
     normal:  mascoteImg.getAttribute("src"),
     pequeno: mascoteImg.dataset.imgPequeno || mascoteImg.getAttribute("src"),
@@ -35,8 +20,6 @@ const IMAGENS_MASCOTE = mascoteImg ? {
     grande:  mascoteImg.dataset.imgGrande  || mascoteImg.getAttribute("src"),
 } : null;
 
-// Define qual imagem do mascote mostrar de acordo com o multiplicador
-// ganho naquele giro (0 = sem ganho).
 function atualizarMascote(multiplicador) {
 
     if (!mascoteImg || !IMAGENS_MASCOTE) return;
@@ -75,9 +58,8 @@ function limparDestaques() {
     casas.forEach(casa => {
         casa.classList.remove("casa-ganhou");
         casa.style.backgroundColor = "";
-        // força reinício da animação caso a mesma casa ganhe de novo no próximo giro
         casa.style.animation = "none";
-        void casa.offsetWidth; // reflow
+        void casa.offsetWidth;
         casa.style.animation = "";
     });
 }
@@ -181,10 +163,8 @@ botao.addEventListener("click", async () => {
 
                 i++;
 
-                // Espera 1 segundo mostrando o resultado
                 setTimeout(() => {
 
-                    // Se ainda houver outra spin, faz a animação novamente
                     if (i < resultado.resultados.length) {
 
                     animacao = setInterval(embaralhar, 50);

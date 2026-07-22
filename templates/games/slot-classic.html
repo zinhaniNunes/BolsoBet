@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 
-<body alt="background error" style="background-image: url('/static/assets/imgs/fundo_cassino.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+<body alt="background error" style="background-image: url('/static/assets/imgs/fundo_classic.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
 
     <header class="navbar">
 
@@ -44,21 +44,21 @@
     <main class="container">
             <div class="mascote-container">
                 <img id="mascote-img"
-                     src="/static/assets/imgs/cassino(neutro).png"
-                     data-img-pequeno="/static/assets/imgs/cassino(pequeno).png"
-                     data-img-medio="/static/assets/imgs/cassino(medio).png"
-                     data-img-grande="/static/assets/imgs/cassino(grande).png"
-                     alt="cassino" class="mascote-image">
+                     src="/static/assets/imgs/classic(neutro).png"
+                     data-img-pequeno="/static/assets/imgs/classic(pequeno).png"
+                     data-img-medio="/static/assets/imgs/classic(medio).png"
+                     data-img-grande="/static/assets/imgs/classic(grande).png"
+                     alt="classic" class="mascote-image">
             </div>
             <div class="slot-machine">
                 
                 <!-- Máquina -->
-                <div id="matriz" data-simbolos="🍒,🎲,🃏,🍀,💰,7️⃣">
+                <div id="matriz" data-simbolos="🍒,🍋,🍊,⭐,🍀,💎">
 
                     {% for i in range(3) %}
                     <div class="linha">
-                        {% for j in range(5) %}
-                        <span>7️⃣</span>
+                        {% for j in range(3) %}
+                        <span>💎</span>
                         {% endfor %}
                     </div>
                     {% endfor %}
