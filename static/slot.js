@@ -2,60 +2,60 @@ const casas = document.querySelectorAll(".linha span");
 const primeiraLinha = document.querySelector(".linha");
 const colunasPorLinha = primeiraLinha ? primeiraLinha.children.length : 5;
 
+const matrizEl = document.getElementById("matriz");
 const comprarSpins = document.getElementById("comprar_spins");
 const botao = document.getElementById("girar");
 const aposta = document.getElementById("aposta");
-const tigerImg = document.getElementById("tiger-img");
+const mascoteImg = document.getElementById("mascote-img");
 
-const simbolosAnimacao = [
-    "🍒", "🍊", "🪙", "🧧", "🪭", "🥁", "👑", "💎", "⭐", "🐯",
-    "🎲", "🃏", "🍀", "💰", "7️⃣"
-]; //<---pode separar para a animação n cruzar?
+// Símbolos usados só na animação de embaralhar enquanto espera a
+// resposta do servidor (efeito visual, não é o resultado real do
+// giro). Vêm de um data-attribute no próprio #matriz, então cada jogo
+// usa só os símbolos do seu tema, sem cruzar com os outros. Exemplo:
+//
+// <div id="matriz" data-simbolos="🍒,🍊,🪙,🧧,🪭,🥁,👑,💎,⭐,🐯">
+const FALLBACK_SIMBOLOS = ["🍒", "⭐", "💎"];
+const simbolosAnimacao = matrizEl?.dataset.simbolos
+    ? matrizEl.dataset.simbolos.split(",")
+    : FALLBACK_SIMBOLOS;
 
 // Os caminhos de cada estado do mascote vêm de data-attributes do
-// próprio <img id="tiger-img">, então esse mesmo slot.js serve pra
+// próprio <img id="mascote-img">, então esse mesmo slot.js serve pra
 // qualquer jogo (tigrinho, cassino, zeus, etc). Exemplo no HTML:
 //
-// <img id="tiger-img"
+// <img id="mascote-img"
 //      src="/static/assets/imgs/tiger(neutro).png"
 //      data-img-pequeno="/static/assets/imgs/tiger(boa).png"
 //      data-img-medio="/static/assets/imgs/tiger(grito).png"
 //      data-img-grande="/static/assets/imgs/tiger(chora).png">
-const IMAGENS_TIGRE = tigerImg ? {
-    normal:  tigerImg.getAttribute("src"),
-    pequeno: tigerImg.dataset.imgPequeno || tigerImg.getAttribute("src"),
-    medio:   tigerImg.dataset.imgMedio   || tigerImg.getAttribute("src"),
-    grande:  tigerImg.dataset.imgGrande  || tigerImg.getAttribute("src"),
-} : null;
-const IMAGENS_CASSINO = cassinoImg ? {
-    normal:  cassinoImg.getAttribute("src"),
-    pequeno: cassinoImg.dataset.imgPequeno || cassinoImg.getAttribute("src"),
-    medio:   cassinoImg.dataset.imgMedio   || cassinoImg.getAttribute("src"),
-    grande:  cassinoImg.dataset.imgGrande  || cassinoImg.getAttribute("src"),
+const IMAGENS_MASCOTE = mascoteImg ? {
+    normal:  mascoteImg.getAttribute("src"),
+    pequeno: mascoteImg.dataset.imgPequeno || mascoteImg.getAttribute("src"),
+    medio:   mascoteImg.dataset.imgMedio   || mascoteImg.getAttribute("src"),
+    grande:  mascoteImg.dataset.imgGrande  || mascoteImg.getAttribute("src"),
 } : null;
 
 // Define qual imagem do mascote mostrar de acordo com o multiplicador
 // ganho naquele giro (0 = sem ganho).
-function atualizarTigre(multiplicador) {
+function atualizarMascote(multiplicador) {
 
-    if (!tigerImg || !IMAGENS_TIGRE) return;
+    if (!mascoteImg || !IMAGENS_MASCOTE) return;
 
-    let novaImagem = IMAGENS_TIGRE.normal;
+    let novaImagem = IMAGENS_MASCOTE.normal;
 
     if (multiplicador >= 5) {
-        novaImagem = IMAGENS_TIGRE.grande;
+        novaImagem = IMAGENS_MASCOTE.grande;
     } else if (multiplicador >= 2) {
-        novaImagem = IMAGENS_TIGRE.medio;
+        novaImagem = IMAGENS_MASCOTE.medio;
     } else if (multiplicador > 0) {
-        novaImagem = IMAGENS_TIGRE.pequeno;
+        novaImagem = IMAGENS_MASCOTE.pequeno;
     }
 
-    if (tigerImg.getAttribute("src") !== novaImagem) {
-        tigerImg.src = novaImagem;
+    if (mascoteImg.getAttribute("src") !== novaImagem) {
+        mascoteImg.src = novaImagem;
     }
 }
 
-// Injeta a animação de piscar (3x, meio segundo cada) sem precisar mexer no style.css
 (function injetarEstiloPiscar() {
     const style = document.createElement("style");
     style.textContent = `
@@ -176,7 +176,7 @@ botao.addEventListener("click", async () => {
                 mostrarResultado(resultado.resultados[i].matriz);
                 atualizarSaldoLocal(resultado.resultados[i].saldo);
                 destacarGanhos(resultado.resultados[i].posicoes);
-                atualizarTigre(resultado.resultados[i].multiplicador);
+                atualizarMascote(resultado.resultados[i].multiplicador);
 
 
                 i++;

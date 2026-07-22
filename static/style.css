@@ -530,7 +530,7 @@ input[type="number"] {
     height: 500px; /* Ajuste o tamanho conforme necessário */
 }
 
-.tiger-image {
+.mascote-image {
     width: 100%;
     object-fit: contain;
 }

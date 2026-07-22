@@ -6,6 +6,13 @@ import hashlib
 import secrets
 import tigrinho
 import slot_cassino
+import slot_pirata
+import slot_king
+import slot_brasil
+import slot_classic
+import slot_zeus
+import slot_egito
+
 # import slot_zeus, slot_egito, slot_pirata, slot_king, slot_brasil, slot_classic  # crie seguindo o mesmo padrão
 
 app = Flask(__name__)
@@ -14,11 +21,12 @@ app = Flask(__name__)
 JOGOS = {
     "tigrinho": tigrinho,
     "fortune-cassino": slot_cassino,
-    # "pirate-fortune": slot_pirata,
-    # "zeus-fortune": slot_zeus,
-    # "cleopatra-fortune": slot_egito,
-    # "brasil-mega-wins": slot_brasil,
-    # "classic-slot": slot_classic,
+    "pirate-fortune": slot_pirata,
+    "zeus-fortune": slot_zeus,
+    "cleopatra-fortune": slot_egito,
+    "brasil-mega-wins": slot_brasil,
+    "classic-slot": slot_classic,
+    "fortune-king": slot_king,
 }
 BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "usuarios.db"
@@ -176,8 +184,8 @@ def spin():
         resultado = jogo.jogar(aposta)
 
         ganho_total += resultado["ganho"]
-        saldo_rodando += resultado["ganho"]      # <-- atualiza o saldo rodando ANTES de gravar
-        resultado["saldo"] = saldo_rodando       # agora reflete o saldo real após esse giro
+        saldo_rodando += resultado["ganho"]     
+        resultado["saldo"] = saldo_rodando
 
         spins += resultado["spin_bonus"]
         resultados.append(resultado)

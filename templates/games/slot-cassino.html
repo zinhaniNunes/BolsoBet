@@ -43,20 +43,17 @@
 
     <main class="container">
             <div class="mascote-container">
-                <!-- ATENÇÃO: ajuste esses caminhos pros arquivos que você
-                     realmente tem em /static/assets/imgs/. São nomes de exemplo,
-                     seguindo o mesmo padrão do tigrinho (neutra/pequeno/médio/grande). -->
-                <img id="tiger-img"
-                     src="/static/assets/imgs/garçonete(neutra).png"
-                     data-img-pequeno="/static/assets/imgs/garçonete(feliz).png"
-                     data-img-medio="/static/assets/imgs/garçonete(comemorando).png"
-                     data-img-grande="/static/assets/imgs/garçonete(explosao).png"
-                     alt="Tigrinho" class="tiger-image">
+                <img id="mascote-img"
+                     src="/static/assets/imgs/cassino(neutro).png"
+                     data-img-pequeno="/static/assets/imgs/cassino(pequeno).png"
+                     data-img-medio="/static/assets/imgs/cassino(medio).png"
+                     data-img-grande="/static/assets/imgs/cassino(grande).png"
+                     alt="cassino" class="mascote-image">
             </div>
             <div class="slot-machine">
                 
                 <!-- Máquina -->
-                <div id="matriz">
+                <div id="matriz" data-simbolos="🍒,🎲,🃏,🍀,💰,7️⃣">
 
                     {% for i in range(3) %}
                     <div class="linha">
