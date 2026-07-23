@@ -79,32 +79,32 @@ def fortune_cassino():
 
 @app.route("/games/slot-pirata")
 def pirate_fortune():
-    session["jogo_atual"] = "slot-pirata"
+    session["jogo_atual"] = "pirate-fortune"
     return render_template("games/slot-pirata.html")
 
 @app.route("/games/slot-zeus")
 def zeus_fortune():
-    session["jogo_atual"] = "slot-zeus"
+    session["jogo_atual"] = "zeus-fortune"
     return render_template("games/slot-zeus.html")
 
 @app.route("/games/slot-egito")
 def cleopatra_fortune():
-    session["jogo_atual"] = "slot-egito"
+    session["jogo_atual"] = "cleopatra-fortune"
     return render_template("games/slot-egito.html")
 
 @app.route("/games/slot-brasil")
 def brasil_mega_wins():
-    session["jogo_atual"] = "slot-brasil"
+    session["jogo_atual"] = "brasil-mega-wins"
     return render_template("games/slot-brasil.html")
 
 @app.route("/games/slot-classic")
 def classic_slot():
-    session["jogo_atual"] = "slot-classic"
+    session["jogo_atual"] = "classic-slot"
     return render_template("games/slot-classic.html")
 
 @app.route("/games/slot-king")
 def fortune_king():
-    session["jogo_atual"] = "slot-king"
+    session["jogo_atual"] = "fortune-king"
     return render_template("games/slot-king.html")
 
 @app.route("/games/21")

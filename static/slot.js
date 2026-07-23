@@ -8,6 +8,69 @@ const botao = document.getElementById("girar");
 const aposta = document.getElementById("aposta");
 const mascoteImg = document.getElementById("mascote-img");
 
+// --- Sons ---
+const somRolagem = new Audio("/static/sounds/slot_roll.mp3");
+somRolagem.loop = true;
+
+const somPremioPequeno = new Audio("/static/sounds/premio_pequeno_.mp3");
+const somPremioMedio = new Audio("/static/sounds/premio_medio_.mp3");
+const somPremioGrande = new Audio("/static/sounds/premio_grande_.mp3");
+
+function tocarSom(audio) {
+    audio.currentTime = 0;
+    audio.play().catch(() => {}); // ignora erro caso o navegador bloqueie autoplay
+}
+
+function iniciarSomRolagem() {
+    if (fadeRolagemId) {
+        clearInterval(fadeRolagemId);
+        fadeRolagemId = null;
+    }
+    somRolagem.volume = 1;
+    somRolagem.currentTime = 0;
+    somRolagem.play().catch(() => {});
+}
+
+// Fade-out suave em vez de corte seco: reduz o volume aos poucos até pausar
+let fadeRolagemId = null;
+
+function pararSomRolagem(duracaoMs = 250) {
+    if (fadeRolagemId) {
+        clearInterval(fadeRolagemId);
+        fadeRolagemId = null;
+    }
+
+    const passos = 10;
+    const volumeInicial = somRolagem.volume;
+    const decremento = volumeInicial / passos;
+    const intervaloMs = duracaoMs / passos;
+
+    fadeRolagemId = setInterval(() => {
+        const novoVolume = somRolagem.volume - decremento;
+
+        if (novoVolume <= 0) {
+            somRolagem.pause();
+            somRolagem.currentTime = 0;
+            somRolagem.volume = 1; // restaura para o próximo giro
+            clearInterval(fadeRolagemId);
+            fadeRolagemId = null;
+        } else {
+            somRolagem.volume = novoVolume;
+        }
+    }, intervaloMs);
+}
+
+function tocarSomPremio(multiplicador) {
+    if (multiplicador >= 5) {
+        tocarSom(somPremioGrande);
+    } else if (multiplicador >= 2) {
+        tocarSom(somPremioMedio);
+    } else if (multiplicador > 0) {
+        tocarSom(somPremioPequeno);
+    }
+    // multiplicador == 0 -> sem prêmio, sem som
+}
+
 const FALLBACK_SIMBOLOS = ["🍒", "⭐", "💎"];
 const simbolosAnimacao = matrizEl?.dataset.simbolos
     ? matrizEl.dataset.simbolos.split(",")
@@ -119,6 +182,7 @@ botao.addEventListener("click", async () => {
     botao.disabled = true;
     limparDestaques();
 
+    iniciarSomRolagem();
     let animacao = setInterval(embaralhar, 50);
 
     try {
@@ -139,12 +203,14 @@ botao.addEventListener("click", async () => {
             alert(resultado.erro);
             botao.disabled = false;
             clearInterval(animacao);
+            pararSomRolagem();
             return;
         }
 
         setTimeout(() => {
 
             clearInterval(animacao);
+            pararSomRolagem();
 
             let i = 0;
 
@@ -159,6 +225,7 @@ botao.addEventListener("click", async () => {
                 atualizarSaldoLocal(resultado.resultados[i].saldo);
                 destacarGanhos(resultado.resultados[i].posicoes);
                 atualizarMascote(resultado.resultados[i].multiplicador);
+                tocarSomPremio(resultado.resultados[i].multiplicador);
 
 
                 i++;
@@ -167,11 +234,13 @@ botao.addEventListener("click", async () => {
 
                     if (i < resultado.resultados.length) {
 
+                    iniciarSomRolagem();
                     animacao = setInterval(embaralhar, 50);
 
                     setTimeout(() => {
 
                         clearInterval(animacao);
+                        pararSomRolagem();
 
                         proximaSpin();
 
@@ -195,6 +264,7 @@ botao.addEventListener("click", async () => {
         console.error(erro);
         botao.disabled = false;
         clearInterval(animacao);
+        pararSomRolagem();
         alert("Erro ao comunicar com o servidor.");
     }
 
