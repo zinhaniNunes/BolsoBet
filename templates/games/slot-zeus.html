@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BolsoBet</title>
     <link rel="icon" type="image/svg+xml" href="/static/assets/logo.svg">
     <link rel="stylesheet" href="/static/style.css">
@@ -10,49 +11,9 @@
 
 <body alt="background error" style="background-image: url('/static/assets/imgs/fundo_zeus.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
 
-    <header class="navbar">
 
-    <a href="/" class="logo">
-        <img src="/static/assets/logo.svg" alt="BolsoBet">
-        <span class="logo-text">BolsoBet</span>
-    </a>
-
-    <div class="navbar-right">
-
-        <div class="user-buttons">
-
-            <form action="/deposito" method="GET">
-                <button class="btn saldo-btn">
-                     R$ <span class="saldo">{{ "%.2f"|format(session["saldo"])|replace(".", ",") }}</span>
-                </button>
-            </form>
-
-            <button class="btn perfil-btn">
-                 {{ session["nome"] }}
-            </button>
-
-            <a href="/logout" class="btn btn-login">
-                Sair
-            </a>
-
-        </div>
-
-    </div>
-
-    </header>
-
-    <main class="container">
-            <div class="mascote-container">
-                <img id="mascote-img"
-                     src="/static/assets/imgs/zeus(neutro).png"
-                     data-img-pequeno="/static/assets/imgs/zeus(pequeno).png"
-                     data-img-medio="/static/assets/imgs/zeus(medio).png"
-                     data-img-grande="/static/assets/imgs/zeus(grande).png"
-                     alt="zeus" class="mascote-image">
-            </div>
-            <div class="slot-machine">
-                
-                <!-- Máquina -->
+    <main class="container-lateral">
+                            <!-- Máquina -->
                 <div id="matriz" data-simbolos="🏺,🍇,📜,🍷,🏛️,⚡">
 
                     {% for i in range(5) %}
@@ -63,6 +24,17 @@
                     </div>
                     {% endfor %}
 
+                </div>
+
+            <div class="slot-machine-lateral">
+                
+                <div class="mascote-container">
+                    <img id="mascote-img"
+                        src="/static/assets/imgs/zeus(neutro).png"
+                        data-img-pequeno="/static/assets/imgs/zeus(pequeno).png"
+                        data-img-medio="/static/assets/imgs/zeus(medio).png"
+                        data-img-grande="/static/assets/imgs/zeus(grande).png"
+                        alt="zeus" class="mascote-image">
                 </div>
 
                 <div class="controles">

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BolsoBet</title>
+    <link rel="icon" type="image/svg+xml" href="/static/assets/logo.svg">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body alt="background error" style="background-image: url('/static/assets/imgs/fundo_mineiro.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+
+    <main class="container-lateral">
+                        <!-- Máquina -->
+                <div id="matriz" data-simbolos="🪨,💣,💎">
+
+                    {% for i in range(6) %}
+                    <div class="linha">
+                        {% for j in range(6) %}
+                        <Button><span>🪨</span></Button>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+            <div class="slot-machine-lateral">
+                
+
+            <div class="mascote-container">
+                <img id="mascote-img" class="mineiro mascote-image"
+                     src="/static/assets/imgs/mineiro(neutro).png"
+                     data-img-neutro="/static/assets/imgs/mineiro(neutro).png"
+                     data-img-procura="/static/assets/imgs/mineiro(procura).png"
+                     data-img-ganho="/static/assets/imgs/mineiro(ganho).png"
+                     data-img-perda="/static/assets/imgs/mineiro(perda).png"
+                     alt="mineiro">
+            </div>
+
+                <div class="controles">
+                    <!-- Informações -->
+                        <div class="info-jogo">
+
+                            <p>
+                                💰 saldo restantes:
+                                R$ <span class="saldo">{{ "%.2f"|format(session["saldo"])|replace(".", ",") }}</span>
+                                💰
+                            </p>
+                            <p>
+                                ⛏️ multipicador atual:
+                                X <span class="multiplicador">0,00</span>
+                                ⛏️
+                            </p>
+
+                            <p id="mensagem"></p>
+
+                        </div><!-- Controles -->
+                        <input class="campo" id="aposta" type="number" min="0.40" step="0.10" placeholder="Aposta (R$) minimo R$0,40">
+                        <input class="campo"id="bombas" type="number" min="25" max="35" value="25" placeholder="bombas (25-35)">
+                        <button id="COMEÇAR">COMEÇAR</button>
+                        </div>
+                </div>        
+            </div>
+    </main>
+
+<script src="{{ url_for('static', filename='campo-minado.js') }}"></script>
+
+</body>
+
+</html>

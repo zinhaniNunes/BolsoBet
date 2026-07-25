@@ -24,9 +24,21 @@
 
 }
 
+*,
+*::before,
+*::after{
+    box-sizing: border-box;
+}
+
+html{
+    overflow-x: hidden;
+}
+
 body{
     margin: 0px;
-    background: var(--bg)
+    background: var(--bg);
+    overflow-x: hidden;
+    min-height: 100vh;
 }
 
 .navbar{
@@ -257,7 +269,7 @@ body{
 
 .card{
 
-    width: 80%;
+    width: 20%;
     height: 200;
 
     border-radius: 18px;
@@ -290,8 +302,11 @@ body{
     margin-top: 1%;
     margin-bottom: 1%;
 
+    font-size: 0.8rem;
+
     display: flex;
     justify-content: center;
+    text-align: center;
 
 }
 
@@ -462,6 +477,19 @@ body{
     gap:8px;
 }
 
+.linha button{
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.linha button:disabled{
+    cursor: default;
+}
+
 .linha span{
     width:100px;
     height:100px;
@@ -474,7 +502,21 @@ body{
     border-radius:10px;
 
     font-size:42px;
-}   
+
+    transition: background-color .2s;
+}
+
+.linha button:not(:disabled):hover span{
+    background: var(--card-hover);
+}
+
+.linha span.gema{
+    background: var(--green);
+}
+
+.linha span.bomba{
+    background: #B33A3A;
+}
 
 .controles{
     padding:20px;
@@ -488,27 +530,66 @@ body{
 }
 
 .container {
-    margin-top: 1%;
-    margin-bottom: 3%;
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    max-width: 1100px;
+    padding: 0 20px;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 100vh;
+}
+
+.container-lateral {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    max-width: 1100px;
+    gap: 10px;
+    padding: 0 20px;
+    margin-left: auto;
+    margin-right: auto;
     min-height: 100vh;
 }
 
 .info-jogo{
-    color:var(--text)
+    color:var(--text);
+    text-align: center;
 }
 
 .campo{
+    width: 240px;
     border: none;
     border-radius: 8px;
     background-color: #182437;
     color: #ffffffc5;
-    padding: 8px 12px;
+    padding: 10px 12px;
     font-size: 14px;
     outline: none;
+}
+
+.controles button,
+#girar{
+    width: 240px;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg,#FFD700,#9be015);
+    color: black;
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.controles button:hover,
+#girar:hover{
+    transform: translateY(-2px);
 }
 
 /* Remove spinners em todos os navegadores */
@@ -523,16 +604,37 @@ input[type="number"] {
     appearance: textfield;
 }
 
+.slot-machine-lateral{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
 .mascote-container {
     display: flex;
     align-items: flex-end;
-    width: 500px; /* Ajuste o tamanho conforme necessário */
-    height: 500px; /* Ajuste o tamanho conforme necessário */
+    justify-content: center;
+    overflow: hidden;
+    width: 90%;
+    max-width: 320px;
+    aspect-ratio: 1 / 1;
+    height: auto;
+    margin: 0 auto;
 }
 
 .mascote-image {
     width: 100%;
+    height: auto;
     object-fit: contain;
+    align-items: flex-end;
+}
+
+.mineiro{
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    align-items: flex-end;
 }
 
 
@@ -540,4 +642,239 @@ input[type="number"] {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+}
+
+/* ===================== RESPONSIVO / MOBILE ===================== */
+@media (max-width: 768px) {
+
+    .navbar{
+        padding-right: 10px;
+        padding-left: 0;
+        height: auto;
+        min-height: 60px;
+        flex-wrap: nowrap;
+    }
+
+    .logo{
+        padding: 8px;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .logo img{
+        width: 30px;
+    }
+
+    .logo-text{
+        font-size: 1.05rem;
+        white-space: nowrap;
+    }
+
+    .navbar-right{
+        gap: 6px;
+        flex-shrink: 1;
+        min-width: 0;
+    }
+
+    .guest-buttons,
+    .user-buttons{
+        gap: 5px;
+        flex-wrap: nowrap;
+    }
+
+    .btn{
+        padding: 7px 8px;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .banner{
+        width: 94%;
+        height: auto;
+        min-height: 220px;
+        margin: 16px auto;
+    }
+
+    .banner img{
+        height: 260px;
+    }
+
+    .banner-info{
+        width: 85%;
+        left: 6%;
+    }
+
+    .banner-info h2{
+        font-size: 2rem;
+    }
+
+    .banner-info p{
+        font-size: 0.85rem;
+    }
+
+    .categoria{
+        margin-left: 6%;
+        font-size: 18px;
+    }
+
+    .tabua{
+        width: 94%;
+        height: auto;
+        margin: 6% auto;
+        padding: 4%;
+    }
+
+    .lateral{
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-left: 4%;
+        margin-right: 4%;
+        gap: 8px;
+    }
+
+    .container-lateral {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    max-width: 1100px;
+    gap: 10px;
+    padding: 0 20px;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 100vh;
+}
+
+    .card{
+        width: 40%;
+    }
+
+    .login-box{
+        width: 0;
+        padding: 28px;
+    }
+
+    .login-box h1{
+        font-size: 2.2rem;
+    }
+
+    .login-box p{
+        font-size: 1.15rem;
+        margin-bottom: 24px;
+    }
+
+    .login-box form{
+        gap: 24px;
+    }
+
+    .login-box input{
+        padding: 20px;
+        font-size: 20px;
+        border-radius: 14px;
+    }
+
+    .login-box button{
+        padding: 20px;
+        font-size: 20px;
+        border-radius: 14px;
+    }
+
+    .login-box span{
+        font-size: 17px;
+    }
+
+    .container{
+        flex-direction: column;
+        margin-top: 0;
+        min-height: auto;
+        padding: 20px 0;
+    }
+
+    .mascote-container{
+        max-width: 220px;
+    }
+
+    .mascote-container{
+        height: max-content;
+        width: auto;
+    }
+
+    .mineiro{
+        height: 100%;
+        width: auto;
+        object-fit: contain;
+        align-items: flex-end;
+    }
+
+    .slot-machine{
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .slot-machine-lateral{
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    #matriz{
+        padding: 8px;
+        gap: 4px;
+    }
+
+    .linha{
+        gap: 4px;
+        justify-content: center;
+    }
+
+    .linha span{
+        width: 60px;
+        height: 60px;
+        font-size: 26px;
+    }
+
+    .controles{
+        width: 90%;
+        padding: 12px;
+    }
+
+    .campo,
+    .controles button,
+    #girar{
+        width: 100%;
+        max-width: 240px;
+    }
+}
+
+@media (max-width: 420px){
+    .linha span{
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+
+    .mascote-container{
+        max-width: 160px;
+    }
+
+    .logo-text{
+        display: none;
+    }
+
+    .btn{
+        padding: 6px 6px;
+        font-size: 10px;
+    }
+
+    .mineiro{
+        height: 100%;
+        width: auto;
+        object-fit: contain;
+    }
 }

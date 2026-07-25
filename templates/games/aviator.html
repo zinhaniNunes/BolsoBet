@@ -9,32 +9,27 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 
-<body alt="background error" style="background-image: url('/static/assets/imgs/fundo_king.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+<body alt="background error" style="background-image: url('/static/assets/imgs/fundo_aviator.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
 
 
     <main class="container-lateral">
                         <!-- Máquina -->
-                <div id="matriz" data-simbolos="🛡️,⚔️,🏹,🪙,🏰,👑">
+                <div id="matriz" data-simbolos="✈️,💥" class="grande">
 
-                    {% for i in range(4) %}
-                    <div class="linha">
-                        {% for j in range(5) %}
-                        <span>👑</span>
-                        {% endfor %}
-                    </div>
-                    {% endfor %}
+
 
                 </div>
 
             <div class="slot-machine-lateral">
                 
+
             <div class="mascote-container">
                 <img id="mascote-img"
-                     src="/static/assets/imgs/king(neutro).png"
-                     data-img-pequeno="/static/assets/imgs/king(pequeno).png"
-                     data-img-medio="/static/assets/imgs/king(medio).png"
-                     data-img-grande="/static/assets/imgs/king(grande).png"
-                     alt="king" class="mascote-image">
+                     src="/static/assets/imgs/piloto(start).png"
+                     data-img-pequeno="/static/assets/imgs/piloto(voo).png"
+                     data-img-medio="/static/assets/imgs/piloto(GANHO).png"
+                     data-img-grande="/static/assets/imgs/mineiro(perda).png"
+                     alt="piloto" class="mascote-image">
             </div>
 
                 <div class="controles">
@@ -42,23 +37,27 @@
                         <div class="info-jogo">
 
                             <p>
-                                🎰 saldo restantes:
+                                💰 saldo restantes:
                                 R$ <span class="saldo">{{ "%.2f"|format(session["saldo"])|replace(".", ",") }}</span>
-                                🎰
+                                💰
+                            </p>
+                            <p>
+                                ✈️ multipicador atual:
+                                X <span class="multiplicador">0,00</span>
+                                ✈️
                             </p>
 
                             <p id="mensagem"></p>
 
                         </div><!-- Controles -->
                         <input class="campo" id="aposta" type="number" min="0.40" step="0.10" placeholder="Aposta (R$) minimo R$0,40">
-                        <input class="campo"id="comprar_spins" type="number" min="1" placeholder="Comprar Spins">
-                        <button id="girar">GIRAR</button>
+                        <button id="COMEÇAR">COMEÇAR</button>
                         </div>
                 </div>        
             </div>
     </main>
 
-<script src="{{ url_for('static', filename='slot.js') }}"></script>
+<script src="{{ url_for('static', filename='campo-minado.js') }}"></script>
 
 </body>
 

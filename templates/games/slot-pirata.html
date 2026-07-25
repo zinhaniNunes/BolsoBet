@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BolsoBet</title>
     <link rel="icon" type="image/svg+xml" href="/static/assets/logo.svg">
     <link rel="stylesheet" href="/static/style.css">
@@ -10,39 +11,9 @@
 
 <body alt="background error" style="background-image: url('/static/assets/imgs/fundo_pirata.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
 
-    <header class="navbar">
-
-    <a href="/" class="logo">
-        <img src="/static/assets/logo.svg" alt="BolsoBet">
-        <span class="logo-text">BolsoBet</span>
-    </a>
-
-    <div class="navbar-right">
-
-        <div class="user-buttons">
-
-            <form action="/deposito" method="GET">
-                <button class="btn saldo-btn">
-                     R$ <span class="saldo">{{ "%.2f"|format(session["saldo"])|replace(".", ",") }}</span>
-                </button>
-            </form>
-
-            <button class="btn perfil-btn">
-                 {{ session["nome"] }}
-            </button>
-
-            <a href="/logout" class="btn btn-login">
-                Sair
-            </a>
-
-        </div>
-
-    </div>
-
-    </header>
 
     <main class="container">
-            <div class="mascote-container">
+            <div class="mascote-container pequeno">
                 <img id="mascote-img"
                      src="/static/assets/imgs/pirata(neutro).png"
                      data-img-pequeno="/static/assets/imgs/pirata(pequeno).png"
