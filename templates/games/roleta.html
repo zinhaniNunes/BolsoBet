@@ -4,71 +4,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BolsoBet</title>
-    <link rel="icon" type="image/svg+xml" href="/static/assets/logo.svg">
-    <link rel="stylesheet" href="/static/style.css">
+    <title>BolsoBet - Roleta</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='assets/logo.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-<body alt="background error" style="background-image: url('/static/assets/imgs/fundo_cassino.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-
+<body alt="background error" class="img-body" style="background-image: url('/static/assets/imgs/fundo_cassino.png');">
     <main class="container-lateral">
-                        <!-- tabela -->
-                <div id="matriz" data-simbolos="🪨,💣,💎,🪎">
-                    <div>
-                        {% for i in range(3) %}
-                        <div class="linha">
-                            {% for j in range(12) %}
-                            <button>{{ 3-i +(3*j)}}</button>
-                            {% endfor %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <div class="linha">
-                        <button class="duzia">1st 12</button><button class="duzia">2nd 12</button><button class="duzia">3rd 12</button> <!-- todos os botões devem ter o msm tamanho -->
-                    </div>
-                    <div class="linha">
-                        <button>1~18</button><button>impar</button><button class="preto">   </button><button class="vermelho">   </button><button>par</button><button>19~36</button> <!-- os vazis são os botões de cor q devem ser pintados --> <!-- todos os botões devem ter o msm tamanho -->
-                    </div>
+
+        <!-- Mesa -->
+        <div id="matriz">
+            <div class="mesa-roleta">
+
+                <!-- casa do zero -->
+                <div class="linha linha-zero">
+                    <button class="aposta-btn zero" data-tipo="numero" data-valor="0">
+                        <span>0</span>
+                    </button>
+                </div>
+
+                <!-- grade de números -->
+                {% for i in range(3) %}
+                <div class="linha">
+                    {% for j in range(12) %}
+                    {% set numero = 3 - i + (3 * j) %}
+                    <button class="aposta-btn {{ 'cor-red' if numero in vermelhos else 'cor-black' }}"
+                            data-tipo="numero" data-valor="{{ numero }}">
+                        <span>{{ numero }}</span>
+                    </button>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+
+                <!-- dúzias -->
+                <div class="linha linha-estica">
+                    <button class="aposta-btn bnt-estica" data-tipo="duzia" data-valor="1"><span>1st 12</span></button>
+                    <button class="aposta-btn bnt-estica" data-tipo="duzia" data-valor="2"><span>2nd 12</span></button>
+                    <button class="aposta-btn bnt-estica" data-tipo="duzia" data-valor="3"><span>3rd 12</span></button>
+                </div>
+
+                <!-- apostas externas -->
+                <div class="linha linha-estica">
+                    <button class="aposta-btn bnt-estica" data-tipo="externo" data-valor="1~18"><span>1↔18</span></button>
+                    <button class="aposta-btn bnt-estica" data-tipo="externo" data-valor="impar"><span>ímpar</span></button>
+                    <button class="aposta-btn bnt-estica cor-red" data-tipo="externo" data-valor="red"><span>vermelho</span></button>
+                    <button class="aposta-btn bnt-estica cor-black" data-tipo="externo" data-valor="black"><span>preto</span></button>
+                    <button class="aposta-btn bnt-estica" data-tipo="externo" data-valor="par"><span>par</span></button>
+                    <button class="aposta-btn bnt-estica" data-tipo="externo" data-valor="19~36"><span>19↔36</span></button>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="slot-machine-lateral">
+
+            <div class="roleta-container">
+                <div class="roleta-ponteiro"></div>
+                <img id="roda-roleta" src="{{ url_for('static', filename='assets/imgs/roleta.png') }}" alt="Roleta">
+            </div>
+
+            <div class="controles">
+                <div class="info-jogo">
+
+                    <p>
+                        💰 saldo restante:
+                        R$ <span class="saldo">{{ "%.2f"|format(session["saldo"])|replace(".", ",") }}</span>
+                        💰
+                    </p>
+                    <p>
+                        número sorteado:
+                        <span class="numero-sorteado">-</span>
+                    </p>
+
+                    <p id="mensagem"></p>
+                    <p id="aposta-selecionada">Escolha uma casa na mesa</p>
 
                 </div>
 
-            <div class="slot-machine-lateral">
-                
-
-            <div class="mascote-container">
-                <img id="mascote-img"
-                     src="/static/assets/imgs/mineiro(neutro).png"
-                     data-img-pequeno="/static/assets/imgs/mineiro(pequeno).png"
-                     data-img-medio="/static/assets/imgs/mineiro(medio).png"
-                     data-img-grande="/static/assets/imgs/mineiro(grande).png"
-                     alt="mineiro" class="mascote-image">
+                <input class="campo" id="aposta" type="number" min="0.40" step="0.10" placeholder="Aposta (R$) minimo R$0,40">
+                <button id="COMEÇAR">GIRAR</button>
             </div>
-
-                <div class="controles">
-                    <!-- Informações -->
-                        <div class="info-jogo">
-
-                            <p>
-                                💰 saldo restantes:
-                                R$ <span class="saldo">{{ "%.2f"|format(session["saldo"])|replace(".", ",") }}</span>
-                                💰
-                            </p>
-                            <p>
-                                multipicador atual:
-                                X <span class="multiplicador">0</span>
-                            </p>
-
-                            <p id="mensagem"></p>
-
-                        </div><!-- Controles -->
-                        <input class="campo" id="aposta" type="number" min="0.40" step="0.10" placeholder="Aposta (R$) minimo R$0,40">
-                        <button id="COMEÇAR">COMEÇAR</button>
-                        </div>
-                </div>        
-            </div>
+        </div>
     </main>
 
-<script src="{{ url_for('static', filename='campo-minado.js') }}"></script>
+    <!-- caminhos dos sons (gerados pelo Flask, lidos pelo roleta.js) -->
+    <div id="config-sons"
+         data-spin="{{ url_for('static', filename='sounds/roleta.mp3') }}"
+         data-premio="{{ url_for('static', filename='sounds/premio_medio_.mp3') }}"></div>
+
+    <script src="{{ url_for('static', filename='roleta.js') }}"></script>
 
 </body>
 

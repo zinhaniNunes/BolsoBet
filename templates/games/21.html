@@ -9,48 +9,45 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 
-<body alt="background error" style="background-image: url('/static/assets/imgs/fundo_classic.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+<body alt="background error" style="background-color: #044b10; background-size: cover; background-position: center; background-repeat: no-repeat;">
 
 
+    <main class="container-lateral">
+                        <!-- mesa -->
+                <div id="matriz" class="mesa">
 
-    <main class="container">
-            <div class="slot-machine">
-                
-                <!-- Máquina -->
-                <div id="matriz" data-simbolos="🍒,🍋,🍊,⭐,🍀,💎">
-
-                    {% for i in range(3) %}
-                    <div class="linha">
-                        {% for j in range(3) %}
-                        <span>💎</span>
-                        {% endfor %}
-                    </div>
-                    {% endfor %}
+                    <!-- div onde aparece as cartas-->
 
                 </div>
+
+            <div class="slot-machine-lateral">
+                
+
+            <div class="21-bnt">
+                <!-- botões comprar e parar q começan cinza e dps ficam verde e vermelhor respectivamente-->
+            </div>
 
                 <div class="controles">
                     <!-- Informações -->
                         <div class="info-jogo">
 
                             <p>
-                                🎰 saldo restantes:
+                                💰 saldo restantes:
                                 R$ <span class="saldo">{{ "%.2f"|format(session["saldo"])|replace(".", ",") }}</span>
-                                🎰
+                                💰
                             </p>
 
                             <p id="mensagem"></p>
 
                         </div><!-- Controles -->
                         <input class="campo" id="aposta" type="number" min="0.40" step="0.10" placeholder="Aposta (R$) minimo R$0,40">
-                        <input class="campo"id="comprar_spins" type="number" min="1" placeholder="Comprar Spins">
-                        <button id="girar">GIRAR</button>
+                        <button id="COMEÇAR">COMEÇAR</button>
                         </div>
                 </div>        
             </div>
     </main>
 
-<script src="{{ url_for('static', filename='slot.js') }}"></script>
+<script src="{{ url_for('static', filename='campo-minado.js') }}"></script>
 
 </body>
 

@@ -5,6 +5,7 @@ import sqlite3
 import hashlib
 import secrets
 import random
+import time
 from math import comb
 import tigrinho
 import slot_cassino
@@ -56,12 +57,78 @@ MINES_BOMBAS_MAX = 35
 def mines_multiplicador(bomba_in_game, jogadas):
     if jogadas <= 0:
         return 0
-    elif jogadas < 3:
+    elif jogadas < 4:
         retorno = jogadas*(1/2)*(bomba_in_game/25)
         return retorno
     else:
-        retorno = jogadas*(2/5.5)*(bomba_in_game/25)
+        retorno = jogadas*(2/5)*(bomba_in_game/25)
         return retorno
+
+
+AVIATOR_ATIVOS = {}
+
+AVIATOR_APOSTA_MINIMA = 0.40
+AVIATOR_VELOCIDADE = 2.0  # unidades de multiplicador por segundo
+
+
+def aviator_gerar_crash():
+    return max(1.00, round(random.expovariate(0.55), 2))
+
+
+def aviator_multiplicador_atual(inicio):
+    elapsed = time.time() - inicio
+    return round(1.00 + elapsed * AVIATOR_VELOCIDADE, 2)
+
+
+ROLETA_APOSTA_MINIMA = 0.40
+
+# Roleta europeia: 37 casas (0 a 36, sem "00")
+ROLETA_VERMELHOS = {1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36}
+
+ROLETA_MULTIPLICADORES = {
+    "numero": 36,   
+    "duzia": 3, 
+    "externo": 2,   
+}
+
+
+def roleta_cor(numero):
+    if numero == 0:
+        return "green"
+    return "red" if numero in ROLETA_VERMELHOS else "black"
+
+
+def roleta_paridade(numero):
+    if numero == 0:
+        return None
+    return "par" if numero % 2 == 0 else "impar"
+
+
+def roleta_duzia(numero):
+    if numero == 0:
+        return None
+    if numero <= 12:
+        return "1"
+    if numero <= 24:
+        return "2"
+    return "3"
+
+
+def roleta_venceu(tipo, valor, numero):
+    if tipo == "numero":
+        return valor == numero
+    if tipo == "duzia":
+        return roleta_duzia(numero) == valor
+    if tipo == "externo":
+        if valor in ("red", "black"):
+            return roleta_cor(numero) == valor
+        if valor in ("par", "impar"):
+            return roleta_paridade(numero) == valor
+        if valor == "1~18":
+            return 1 <= numero <= 18
+        if valor == "19~36":
+            return 19 <= numero <= 36
+    return False
 
 
 # Página inicial
@@ -150,12 +217,107 @@ def vinte_um():
 @app.route("/games/roleta")
 @login_required
 def roleta():
-    return render_template("games/roleta.html")
+    session["jogo_atual"] = "roleta"
+    return render_template("games/roleta.html", vermelhos=ROLETA_VERMELHOS)
+
+
+@app.route("/roleta/girar", methods=["POST"])
+@login_required
+def roleta_girar():
+
+    usuario_id = session["usuario_id"]
+    dados = request.get_json(silent=True) or {}
+
+    tipo = dados.get("tipo")
+    valor = dados.get("valor")
+
+    try:
+        aposta = round(float(dados.get("aposta")), 2)
+    except (TypeError, ValueError):
+        return jsonify({"erro": "Aposta inválida"}), 400
+
+    if aposta < ROLETA_APOSTA_MINIMA:
+        return jsonify({"erro": f"Aposta mínima de R$ {ROLETA_APOSTA_MINIMA:.2f}"}), 400
+
+    multiplicador = ROLETA_MULTIPLICADORES.get(tipo)
+    if multiplicador is None:
+        return jsonify({"erro": "Tipo de aposta inválido"}), 400
+
+    if tipo == "numero":
+        try:
+            valor = int(valor)
+        except (TypeError, ValueError):
+            return jsonify({"erro": "Número inválido"}), 400
+        if not (0 <= valor <= 36):
+            return jsonify({"erro": "Escolha um número entre 0 e 36"}), 400
+
+    elif tipo == "duzia":
+        if valor not in ("1", "2", "3"):
+            return jsonify({"erro": "Dúzia inválida"}), 400
+
+    elif tipo == "externo":
+        if valor not in ("red", "black", "par", "impar", "1~18", "19~36"):
+            return jsonify({"erro": "Aposta externa inválida"}), 400
+
+    con = conectar()
+    cursor = con.cursor()
+
+    cursor.execute("SELECT saldo FROM usuarios WHERE id = ?", (usuario_id,))
+    saldo = cursor.fetchone()[0]
+
+    aposta = round(aposta, 2)
+    saldo = round(saldo, 2)
+
+    if aposta > saldo:
+        con.close()
+        return jsonify({"erro": "Saldo insuficiente"}), 400
+
+    numero_sorteado = random.randint(0, 36)
+    venceu = roleta_venceu(tipo, valor, numero_sorteado)
+
+    saldo -= aposta
+    premio = 0.0
+    if venceu:
+        premio = round(aposta * multiplicador, 2)
+        saldo += premio
+
+    cursor.execute("UPDATE usuarios SET saldo = ? WHERE id = ?", (saldo, usuario_id))
+    con.commit()
+    con.close()
+
+    session["saldo"] = saldo
+
+    return jsonify({
+        "numero": numero_sorteado,
+        "cor": roleta_cor(numero_sorteado),
+        "venceu": venceu,
+        "premio": premio,
+        "saldo": saldo,
+    })
 
 @app.route("/games/fortune-mines")
 @login_required
 def fortune_mines():
     return render_template("games/fortune-mines.html")
+
+
+@app.route("/mines/status")
+@login_required
+def mines_status():
+    usuario_id = session["usuario_id"]
+    jogo = MINES_ATIVOS.get(usuario_id)
+
+    if not jogo or not jogo["ativo"]:
+        return jsonify({"ativo": False})
+
+    mult = mines_multiplicador(jogo["num_bombas"], jogo["jogadas"])
+    return jsonify({
+        "ativo": True,
+        "aposta": jogo["aposta"],
+        "num_bombas": jogo["num_bombas"],
+        "abertas": [list(pos) for pos in jogo["abertas"]],
+        "multiplicador": mult,
+    })
 
 
 @app.route("/mines/iniciar", methods=["POST"])
@@ -186,6 +348,9 @@ def mines_iniciar():
 
     cursor.execute("SELECT saldo FROM usuarios WHERE id = ?", (usuario_id,))
     saldo = cursor.fetchone()[0]
+
+    aposta = round(aposta, 2)
+    saldo = round(saldo, 2)
 
     if aposta > saldo:
         con.close()
@@ -303,7 +468,139 @@ def mines_sacar():
 @app.route("/games/aviator")
 @login_required
 def aviator():
+    session["jogo_atual"] = "aviator"
     return render_template("games/aviator.html")
+
+
+@app.route("/aviator/apostar", methods=["POST"])
+@login_required
+def aviator_apostar():
+
+    usuario_id = session["usuario_id"]
+
+    dados = request.get_json(silent=True) or {}
+
+    try:
+        aposta = round(float(dados.get("aposta")), 2)
+    except (TypeError, ValueError):
+        return jsonify({"erro": "Aposta inválida"}), 400
+
+    rodada = AVIATOR_ATIVOS.get(usuario_id)
+    if rodada and rodada.get("ativo"):
+        return jsonify({"erro": "Você já tem uma aposta em andamento"}), 400
+
+    if aposta < AVIATOR_APOSTA_MINIMA:
+        return jsonify({"erro": f"Aposta mínima de R$ {AVIATOR_APOSTA_MINIMA:.2f}"}), 400
+
+    con = conectar()
+    cursor = con.cursor()
+
+    cursor.execute("SELECT saldo FROM usuarios WHERE id = ?", (usuario_id,))
+    saldo = cursor.fetchone()[0]
+
+    aposta = round(aposta, 2)
+    saldo = round(saldo, 2)
+
+    if aposta > saldo:
+        con.close()
+        return jsonify({"erro": "Saldo insuficiente"}), 400
+
+    saldo -= aposta
+
+    cursor.execute("UPDATE usuarios SET saldo = ? WHERE id = ?", (saldo, usuario_id))
+    con.commit()
+    con.close()
+
+    session["saldo"] = saldo
+
+    AVIATOR_ATIVOS[usuario_id] = {
+        "aposta": aposta,
+        "crash": aviator_gerar_crash(),
+        "inicio": time.time(),
+        "ativo": True,
+    }
+
+    return jsonify({"saldo": saldo})
+
+
+@app.route("/aviator/status")
+@login_required
+def aviator_status():
+
+    usuario_id = session["usuario_id"]
+    rodada = AVIATOR_ATIVOS.get(usuario_id)
+
+    if not rodada or not rodada.get("ativo"):
+        return jsonify({"ativa": False})
+
+    mult = aviator_multiplicador_atual(rodada["inicio"])
+    crash = rodada["crash"]
+
+    if mult >= crash:
+        rodada["ativo"] = False
+        return jsonify({
+            "ativa": False,
+            "caiu": True,
+            "multiplicador": crash,
+            "saldo": session.get("saldo"),
+        })
+
+    return jsonify({
+        "ativa": True,
+        "caiu": False,
+        "multiplicador": mult,
+        "saldo": session.get("saldo"),
+    })
+
+
+@app.route("/aviator/sacar", methods=["POST"])
+@login_required
+def aviator_sacar():
+
+    usuario_id = session["usuario_id"]
+    rodada = AVIATOR_ATIVOS.get(usuario_id)
+
+    if not rodada or not rodada.get("ativo"):
+        return jsonify({"erro": "Nenhuma aposta em andamento"}), 400
+
+    mult = aviator_multiplicador_atual(rodada["inicio"])
+    crash = rodada["crash"]
+
+    if mult >= crash:
+        rodada["ativo"] = False
+        return jsonify({
+            "ok": False,
+            "caiu": True,
+            "multiplicador": crash,
+            "saldo": session.get("saldo"),
+        })
+
+    premio = round(rodada["aposta"] * mult, 2)
+
+    con = conectar()
+    cursor = con.cursor()
+
+    cursor.execute(
+        "UPDATE usuarios SET saldo = saldo + ? WHERE id = ?",
+        (premio, usuario_id)
+    )
+    con.commit()
+
+    cursor.execute("SELECT saldo FROM usuarios WHERE id = ?", (usuario_id,))
+    saldo = cursor.fetchone()[0]
+    con.close()
+
+    session["saldo"] = saldo
+    rodada["ativo"] = False
+
+    return jsonify({
+        "ok": True,
+        "caiu": False,
+        "multiplicador": mult,
+        "premio": premio,
+        "saldo": saldo,
+    })
+
 
 @app.route("/saldo")
 @login_required
@@ -349,6 +646,8 @@ def spin():
         return jsonify({"erro": "Quantidade de spins inválida"}), 400
 
     custo = aposta * spins
+
+    custo = round(aposta * spins, 2)
 
     if saldo < custo:
         con.close()

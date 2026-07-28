@@ -4,60 +4,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BolsoBet</title>
-    <link rel="icon" type="image/svg+xml" href="/static/assets/logo.svg">
-    <link rel="stylesheet" href="/static/style.css">
+    <title>BolsoBet - Aviator</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='assets/logo.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body alt="background error" style="background-image: url('/static/assets/imgs/fundo_aviator.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
 
-
-    <main class="container-lateral">
-                        <!-- Máquina -->
+    <main class="container">
+        <div class="slot-machine-lateral">
                 <div id="matriz" data-simbolos="✈️,💥" class="grande">
+            <div class="aviator-sky" id="ceu">
+                <div class="aviator-trilha" id="trilha"></div>
+                <div class="aviator-aviao idle" id="aviao">✈️</div>
+            </div>
+        </div>
+            <div class="controles">
+                <!-- Informações -->
+                <div class="info-jogo">
+                    <p>
+                        💰 saldo restante:
+                        R$ <span class="saldo">{{ "%.2f"|format(session["saldo"])|replace(".", ",") }}</span>
+                        💰
+                    </p>
+                    <p>
+                        ✈️ multiplicador atual:
+                        X <span class="multiplicador">0,00</span>
+                        ✈️
+                    </p>
 
-
-
+                    <p id="mensagem"></p>
                 </div>
 
-            <div class="slot-machine-lateral">
-                
-
-            <div class="mascote-container">
-                <img id="mascote-img"
-                     src="/static/assets/imgs/piloto(start).png"
-                     data-img-pequeno="/static/assets/imgs/piloto(voo).png"
-                     data-img-medio="/static/assets/imgs/piloto(GANHO).png"
-                     data-img-grande="/static/assets/imgs/mineiro(perda).png"
-                     alt="piloto" class="mascote-image">
+                <!-- Controles -->
+                <input class="campo" id="aposta" type="number" min="0.40" step="0.10" placeholder="Aposta (R$) mínimo R$0,40">
+                <button id="COMEÇAR">COMEÇAR</button>
             </div>
-
-                <div class="controles">
-                    <!-- Informações -->
-                        <div class="info-jogo">
-
-                            <p>
-                                💰 saldo restantes:
-                                R$ <span class="saldo">{{ "%.2f"|format(session["saldo"])|replace(".", ",") }}</span>
-                                💰
-                            </p>
-                            <p>
-                                ✈️ multipicador atual:
-                                X <span class="multiplicador">0,00</span>
-                                ✈️
-                            </p>
-
-                            <p id="mensagem"></p>
-
-                        </div><!-- Controles -->
-                        <input class="campo" id="aposta" type="number" min="0.40" step="0.10" placeholder="Aposta (R$) minimo R$0,40">
-                        <button id="COMEÇAR">COMEÇAR</button>
-                        </div>
-                </div>        
-            </div>
+        </div>
     </main>
 
-<script src="{{ url_for('static', filename='campo-minado.js') }}"></script>
+    <script src="{{ url_for('static', filename='aviator.js') }}"></script>
 
 </body>
 

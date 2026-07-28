@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const audio = new Audio(caminho);
         audio.play()
             .then(() => {
-                console.log(`[som] "${chave}" iniciou. duration=${audio.duration}s volume=${audio.volume} muted=${audio.muted}`);
+                //console.log(`[som] "${chave}" iniciou. duration=${audio.duration}s volume=${audio.volume} muted=${audio.muted}`);
             })
             .catch(erro => {
                 console.error(`[som] falha ao tocar "${chave}" (${caminho}):`, erro.name, erro.message);
@@ -290,7 +290,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             atualizarSaldo(dados.saldo);
             jogoAtivo = false;
-            tocarSom('premio');
+
+            if (dados.ganho > 1) {
+                tocarSom('premio');
+            }
             finalizarRodada();
         } catch (e) {
             //erro!

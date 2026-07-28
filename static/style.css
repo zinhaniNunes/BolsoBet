@@ -630,18 +630,216 @@ input[type="number"] {
     align-items: flex-end;
 }
 
-.mineiro{
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    align-items: flex-end;
-}
-
-
 .img-body{
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+}
+
+#roda-roleta{
+    width: 100%;
+}
+
+#config-sons{
+    display: none;
+}
+
+/* ===================== ROLETA ===================== */
+.mesa-roleta{
+    background: radial-gradient(ellipse at center, #0d5c33, #093c21);
+    border: 10px solid #3b1c02;
+    border-radius: 16px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.linha-zero{
+    display: flex;
+}
+
+.aposta-btn{
+    background: transparent;
+    flex: 0 0 auto;
+}
+
+.aposta-btn span{
+    width: 56px;
+    height: 56px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #eeeeeec4;
+
+    transition: filter .2s;
+}
+
+.aposta-btn:hover span{
+    filter: brightness(1.2);
+}
+
+.aposta-btn span{
+    background: #182437;
+    border: 1px solid var(--border);
+}
+
+.aposta-btn.cor-red span{
+    background: #B33A3A;
+    border-color: #B33A3A;
+}
+
+.aposta-btn.cor-black span{
+    background: #10151d;
+    border-color: var(--border);
+}
+
+/* Zero: uma casa só, larga, acima da grade */
+.aposta-btn.zero{
+    flex: 1 1 auto;
+}
+
+.aposta-btn.zero span{
+    width: 100%;
+    height: 44px;
+    background: var(--green);
+    border: none;
+    font-size: 18px;
+}
+
+/* Dúzias e apostas externas: dividem a linha igualmente */
+.linha-estica{
+    display: flex;
+}
+
+.linha-estica .aposta-btn.bnt-estica{
+    flex: 1 1 0;
+}
+
+.linha-estica .aposta-btn.bnt-estica span{
+    width: 100%;
+    height: 44px;
+    font-size: 14px;
+}
+
+.aposta-btn.selecionado span{
+    outline: 3px solid var(--gold);
+    outline-offset: -3px;
+}
+
+#aposta-selecionada{
+    color: var(--gold-light);
+}
+
+/* Roda giratória */
+.roleta-container{
+    position: relative;
+}
+
+.roleta-container img{
+    display: block;
+    border-radius: 50%;
+    transform-origin: 50% 50%;
+    will-change: transform;
+}
+
+.roleta-ponteiro{
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 20px solid var(--gold);
+    filter: drop-shadow(0 2px 3px #000000aa);
+    z-index: 2;
+}
+
+/* ===================== AVIATOR (avião) ===================== */
+.aviator-sky{
+    position: relative;
+    width: 100%;
+    height: 340px;
+
+    border-radius: 12px;
+    overflow: hidden;
+
+    background: linear-gradient(180deg, #101d33 0%, #0a1420 100%);
+}
+
+.aviator-trilha{
+    position: absolute;
+    left: 8%;
+    bottom: 10%;
+
+    width: 0;
+    height: 0;
+
+    border-bottom: 3px solid var(--gold);
+    border-right: 3px solid var(--gold);
+    border-bottom-right-radius: 60px;
+
+    opacity: .55;
+
+    transition: width .12s linear, height .12s linear;
+
+    pointer-events: none;
+}
+
+.aviator-aviao{
+    position: absolute;
+    left: 8%;
+    bottom: 10%;
+
+    font-size: 48px;
+    line-height: 1;
+
+    transform: translate(-50%, 50%) rotate(-20deg);
+    transform-origin: center;
+
+    transition: left .12s linear, bottom .12s linear;
+
+    filter: drop-shadow(0 4px 6px #00000080);
+
+    z-index: 2;
+}
+
+.aviator-aviao.idle{
+    animation: aviao-flutuar 1.6s ease-in-out infinite;
+}
+
+@keyframes aviao-flutuar{
+    0%,100%{ transform: translate(-50%, 50%) rotate(-20deg); }
+    50%{ transform: translate(-50%, 50%) translateY(-8px) rotate(-16deg); }
+}
+
+.aviator-aviao.caiu{
+    font-size: 56px;
+    animation: aviao-explodir .5s ease-out forwards;
+}
+
+@keyframes aviao-explodir{
+    0%{ transform: translate(-50%, 50%) scale(1) rotate(0deg); }
+    50%{ transform: translate(-50%, 50%) scale(1.7) rotate(20deg); }
+    100%{ transform: translate(-50%, 50%) scale(1.3) rotate(-10deg); opacity: .85; }
+}
+
+.aviator-sky.tremer{
+    animation: ceu-tremer .35s;
+}
+
+@keyframes ceu-tremer{
+    0%,100%{ transform: translate(0,0); }
+    25%{ transform: translate(-5px, 3px); }
+    50%{ transform: translate(5px, -3px); }
+    75%{ transform: translate(-4px, -4px); }
 }
 
 /* ===================== RESPONSIVO / MOBILE ===================== */
@@ -828,6 +1026,24 @@ input[type="number"] {
         gap: 4px;
     }
 
+    .aviator-sky{
+        height: 220px;
+    }
+
+    .aviator-aviao{
+        font-size: 34px;
+    }
+
+    .aviator-aviao.caiu{
+        font-size: 40px;
+    }
+
+    .mesa-roleta{
+        padding: 8px;
+        border-width: 6px;
+        gap: 4px;
+    }
+
     .linha{
         gap: 4px;
         justify-content: center;
@@ -837,6 +1053,17 @@ input[type="number"] {
         width: 60px;
         height: 60px;
         font-size: 26px;
+    }
+
+    .aposta-btn span{
+        width: 36px;
+        height: 36px;
+        font-size: 12px;
+    }
+
+    .linha-estica .aposta-btn.bnt-estica span{
+        height: 34px;
+        font-size: 11px;
     }
 
     .controles{
@@ -872,9 +1099,44 @@ input[type="number"] {
         font-size: 10px;
     }
 
-    .mineiro{
+    .mini{
         height: 100%;
         width: auto;
         object-fit: contain;
     }
+
+    .login-box{
+        width: 100px;
+        padding: 28px;
+    }
+
+    .login-box h1{
+        font-size: 2.2rem;
+    }
+
+    .login-box p{
+        font-size: 1.15rem;
+        margin-bottom: 24px;
+    }
+
+    .login-box form{
+        gap: 24px;
+    }
+
+    .login-box input{
+        padding: 20px;
+        font-size: 20px;
+        border-radius: 14px;
+    }
+
+    .login-box button{
+        padding: 20px;
+        font-size: 20px;
+        border-radius: 14px;
+    }
+
+    .login-box span{
+        font-size: 17px;
+    }
+    
 }
