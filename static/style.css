@@ -1086,8 +1086,12 @@ input[type="number"] {
         font-size: 20px;
     }
 
-    .mascote-container{
-        max-width: 160px;
+    .mascote-container {
+        max-width: 240px;
+    }
+
+    .mascote-container.mineiro {
+        max-width: 190px;
     }
 
     .logo-text{
