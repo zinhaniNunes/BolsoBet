@@ -12,13 +12,16 @@
 <body alt="background error" style="background-image: url('/static/assets/imgs/fundo_aviator.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
 
     <main class="container">
-        <div class="slot-machine-lateral">
-                <div id="matriz" data-simbolos="✈️,💥" class="grande">
-            <div class="aviator-sky" id="ceu">
-                <div class="aviator-trilha" id="trilha"></div>
-                <div class="aviator-aviao idle" id="aviao">✈️</div>
-            </div>
+        <div style="background-color: #182437;">
+            <p id="mensagem" style="background-color: #182437;">✈️ Aviator ✈️</p>
         </div>
+        <div class="slot-machine-lateral">
+            <div id="matriz" class="aviator-tela" data-simbolos="✈️,💥">
+                <div class="aviator-sky" id="ceu">
+                    <div class="aviator-trilha" id="trilha"></div>
+                    <div class="aviator-aviao idle" id="aviao">✈️</div>
+                </div>
+            </div>
             <div class="controles">
                 <!-- Informações -->
                 <div class="info-jogo">
@@ -32,8 +35,6 @@
                         X <span class="multiplicador">0,00</span>
                         ✈️
                     </p>
-
-                    <p id="mensagem"></p>
                 </div>
 
                 <!-- Controles -->

@@ -68,16 +68,16 @@ def mines_multiplicador(bomba_in_game, jogadas):
 AVIATOR_ATIVOS = {}
 
 AVIATOR_APOSTA_MINIMA = 0.40
-AVIATOR_VELOCIDADE = 2.0  # unidades de multiplicador por segundo
+AVIATOR_VELOCIDADE = 1.0  # unidades de multiplicador por segundo
 
 
 def aviator_gerar_crash():
-    return max(1.00, round(random.expovariate(0.55), 2))
+    return max(1.00, round(random.expovariate(1), 2))
 
 
 def aviator_multiplicador_atual(inicio):
     elapsed = time.time() - inicio
-    return round(1.00 + elapsed * AVIATOR_VELOCIDADE, 2)
+    return round(1.00 + elapsed * AVIATOR_VELOCIDADE, 1)
 
 
 ROLETA_APOSTA_MINIMA = 0.40

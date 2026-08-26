@@ -18,19 +18,30 @@ let poll = null;
 // Move o avião numa curva que desacelera conforme o multiplicador cresce,
 // pra sempre caber dentro do "céu" mesmo em multiplicadores muito altos.
 function moverAviao(mult) {
-    const progresso = Math.min(0.92, 1 - 1 / mult); // 0 -> quase 1, nunca estoura os 100%
+    mult = Math.max(mult, 1);
 
-    const maxX = 82; // % de deslocamento horizontal
-    const maxY = 70; // % de deslocamento vertical
+    const progresso = Math.min(1, 1 - 1 / mult);
+
+    const maxX = 82;
+    const maxY = 70;
 
     const x = progresso * maxX;
     const y = progresso * maxY;
 
+    // Move o avião
     aviao.style.left = `calc(8% + ${x}%)`;
     aviao.style.bottom = `calc(10% + ${y}%)`;
 
-    trilha.style.width = `${x}%`;
-    trilha.style.height = `${y}%`;
+    // Calcula a linha
+    const dx = x;
+    const dy = y/2;
+
+    const comprimento = Math.sqrt(dx * dx + dy * dy);
+
+    const angulo = -Math.atan2(dy, dx) * 180 / Math.PI;
+
+    trilha.style.width = `${comprimento}%`;
+    trilha.style.transform = `rotate(${angulo}deg)`;
 }
 
 function resetarAviao() {
