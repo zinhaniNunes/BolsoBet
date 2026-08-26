@@ -84,25 +84,25 @@ async function apostar() {
     const valor = parseFloat(campoAposta.value);
 
     if (isNaN(valor)) {
-        mensagem.textContent = "Digite um valor de aposta.";
+        //mensagem.textContent = "Digite um valor de aposta.";
         return;
     }
 
     const resp = await fetch("/aviator/apostar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ aposta: valor }),
-    });
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ aposta: 1.00 })
+            })
     const data = await resp.json();
 
     if (!resp.ok) {
-        mensagem.textContent = data.erro;
+        //mensagem.textContent = data.erro;
         return;
     }
 
     saldoSpan.textContent = formatar(data.saldo);
     multSpan.textContent = "1,00";
-    mensagem.textContent = "";
+    //mensagem.textContent = "";
 
     decolarAviao();
 
@@ -131,7 +131,7 @@ async function atualizarStatus() {
 
     if (data.caiu) {
         multSpan.textContent = formatar(data.multiplicador);
-        mensagem.textContent = "💥 O avião caiu! Você perdeu a aposta.";
+        //mensagem.textContent = "💥 O avião caiu! Você perdeu a aposta.";
         saldoSpan.textContent = formatar(data.saldo);
         explodirAviao();
     }
@@ -150,9 +150,9 @@ async function sacar() {
     saldoSpan.textContent = formatar(data.saldo);
 
     if (data.ok) {
-        mensagem.textContent = `✅ Você sacou em ${formatar(data.multiplicador)}x! Prêmio: R$${formatar(data.premio)}`;
+        //mensagem.textContent = `✅ Você sacou em ${formatar(data.multiplicador)}x! Prêmio: R$${formatar(data.premio)}`;
     } else {
-        mensagem.textContent = "💥 O avião caiu antes do seu saque!";
+        //mensagem.textContent = "💥 O avião caiu antes do seu saque!";
         explodirAviao();
     }
 }

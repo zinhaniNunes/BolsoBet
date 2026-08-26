@@ -209,10 +209,117 @@ def fortune_king():
     session["jogo_atual"] = "fortune-king"
     return render_template("games/slot-king.html")
 
-@app.route("/games/21")
+@app.route("/games/opicoes-binarias")
 @login_required
 def vinte_um():
-    return render_template("games/21.html")
+    session["jogo_atual"] = "opicoes-binarias"
+    return render_template("games/opicoes-binarias.html")
+
+
+# ===================== OPÇÕES BINÁRIAS =====================
+
+OPBIN_ATIVOS = {}
+
+OPBIN_APOSTA_MINIMA = 0.40
+OPBIN_CHANCE_VITORIA = 33  # em %
+OPBIN_MULTIPLICADOR = 2
+OPBIN_HISTORICO_MAX = 10
+
+
+def opbin_gerar_valor():
+    return round(random.randint(1, 100) / 100, 2)
+
+
+def opbin_estado_usuario(usuario_id):
+    """Garante que o usuário tenha um histórico de velas iniciado."""
+    if usuario_id not in OPBIN_ATIVOS:
+        velas = []
+        for _ in range(5):
+            velas.append({
+                "valor": opbin_gerar_valor(),
+                "cor": random.choice(["verde", "vermelho"]),
+                "resultado": None,
+            })
+        OPBIN_ATIVOS[usuario_id] = {"velas": velas}
+    return OPBIN_ATIVOS[usuario_id]
+
+
+@app.route("/opbin/estado")
+@login_required
+def opbin_estado():
+    usuario_id = session["usuario_id"]
+    estado = opbin_estado_usuario(usuario_id)
+    return jsonify({
+        "velas": estado["velas"],
+        "saldo": session.get("saldo"),
+        "aposta_minima": OPBIN_APOSTA_MINIMA,
+    })
+
+
+@app.route("/opbin/jogar", methods=["POST"])
+@login_required
+def opbin_jogar():
+    usuario_id = session["usuario_id"]
+    dados = request.get_json(silent=True) or {}
+
+    direcao = dados.get("direcao")
+    if direcao not in ("subir", "descer"):
+        return jsonify({"erro": "Direção inválida"}), 400
+
+    try:
+        aposta = round(float(dados.get("aposta")), 2)
+    except (TypeError, ValueError):
+        return jsonify({"erro": "Aposta inválida"}), 400
+
+    if aposta < OPBIN_APOSTA_MINIMA:
+        return jsonify({"erro": f"Aposta mínima de R$ {OPBIN_APOSTA_MINIMA:.2f}"}), 400
+
+    con = conectar()
+    cursor = con.cursor()
+
+    cursor.execute("SELECT saldo FROM usuarios WHERE id = ?", (usuario_id,))
+    saldo = round(cursor.fetchone()[0], 2)
+
+    if aposta > saldo:
+        con.close()
+        return jsonify({"erro": "Saldo insuficiente"}), 400
+
+    estado = opbin_estado_usuario(usuario_id)
+
+    venceu = OPBIN_CHANCE_VITORIA > random.randint(1, 100)
+    cor_resultado = "verde" if direcao == "subir" else "vermelho"
+    if not venceu:
+        cor_resultado = "vermelho" if direcao == "subir" else "verde"
+
+    saldo -= aposta
+    premio = 0.0
+    if venceu:
+        premio = round(aposta * OPBIN_MULTIPLICADOR, 2)
+        saldo += premio
+
+    saldo = round(saldo, 2)
+
+    cursor.execute("UPDATE usuarios SET saldo = ? WHERE id = ?", (saldo, usuario_id))
+    con.commit()
+    con.close()
+
+    session["saldo"] = saldo
+
+    nova_vela = {
+        "valor": opbin_gerar_valor(),
+        "cor": cor_resultado,
+        "resultado": "vitoria" if venceu else "derrota",
+    }
+    estado["velas"].append(nova_vela)
+    if len(estado["velas"]) > OPBIN_HISTORICO_MAX:
+        estado["velas"].pop(0)
+
+    return jsonify({
+        "venceu": venceu,
+        "vela": nova_vela,
+        "premio": premio,
+        "saldo": saldo,
+    })
 
 @app.route("/games/roleta")
 @login_required
