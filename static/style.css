@@ -74,8 +74,8 @@ body{
 }
 
 .aviator-tela{
-    width: 600px;
-    height: 300px;
+    width: 1000px;
+    height: 500px;
 }
 
 .btn{
@@ -485,12 +485,11 @@ body{
 }
 
 #matriz{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    padding:20px;
-    border-radius:15px;
-    background:#0F1825;
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+    border-radius: 15px;
+    background: #0F1825;
 }
 
 .linha{
@@ -527,36 +526,102 @@ body{
     transition: background-color .2s;
 }
 
-/* ===================== OPÇÕES BINÁRIAS ===================== */
-.trilho-velas{
+/* ===================== OPÇÕES BINÁRIAS (candlestick estilo Binance) ===================== */
+.chart-header{
+    background: #0F1825;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 23%;
+    border-radius: 15px;
+    padding: 6px 12px;
+    margin-bottom: 10px;
+}
+
+.chart-header-label{
+    color: #ffffffb3;
+    font-size: 14px;
+}
+
+.select-moeda{
+    background: #0F1825;
+    color: #fff;
+    border: 1px solid #2a3b52;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.select-moeda:disabled{
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.chart-opbin{
+    display: block;
+}
+
+/* linha pontilada branca marcando o preço atual, como na Binance */
+.chart-linha-preco{
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 0;
+    border-top: 1px dashed rgba(255, 255, 255, 0.75);
+    z-index: 2;
+    pointer-events: none;
+    transition: bottom .15s linear;
+}
+
+.chart-trilho{
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    top: 20px;
     display: flex;
     align-items: flex-end;
-    gap: 8px;
-    width: 100%;
+    justify-content: flex-start;
+    gap: 14px;
+}
+
+.candle{
+    position: relative;
+    width: 26px;
     height: 100%;
+    flex-shrink: 0;
 }
 
-.vela-opbin{
-    width: 28px;
-    border-radius: 4px;
-    transition: height .25s ease;
+.candle-corpo{
+    position: absolute;
+    left: 50%;
+    width: 100%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+    background: currentColor;
 }
 
-.vela-verde{
-    background: var(--green);
+.candle-verde{
+    color: var(--green);
 }
 
-.vela-vermelha{
-    background: #B33A3A;
+.candle-vermelha{
+    color: #B33A3A;
 }
 
-.vela-vitoria{
-    outline: 2px solid var(--gold);
-    outline-offset: 2px;
+/* a vela "em formação" pulsa suavemente enquanto o resultado é decidido */
+.candle-formando .candle-corpo{
+    transition: none;
 }
 
-.vela-derrota{
-    opacity: .65;
+.candle-formando{
+    animation: candle-pulso 1s ease-in-out infinite;
+}
+
+@keyframes candle-pulso{
+    0%, 100%{ filter: brightness(1); }
+    50%{ filter: brightness(1.35); }
 }
 
 #SUBIR.selecionado,
@@ -825,7 +890,7 @@ input[type="number"] {
 .aviator-sky{
     position: relative;
     width: 100%;
-    height: 340px;
+    height: 100%;
 
     border-radius: 12px;
     overflow: hidden;
@@ -1267,4 +1332,72 @@ input[type="number"] {
     }
     
 
+}
+
+
+/* =========================================================
+   CORREÇÃO DE COMPATIBILIDADE ENTRE OS JOGOS
+   Fortune Mines, Roleta, Aviator e Opções Binárias usam
+   o mesmo id="matriz", mas precisam de layouts diferentes.
+   Estas regras ficam no final para prevalecer sobre o CSS
+   anterior sem quebrar o gráfico das Opções Binárias.
+   ========================================================= */
+
+/* Fortune Mines e Roleta:
+   as casas são organizadas por linhas. */
+#matriz:has(.linha),
+#matriz:has(.mesa-roleta) {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* A mesa da roleta não deve ser limitada por overflow,
+   pois alguns elementos podem ficar maiores que a matriz. */
+#matriz:has(.mesa-roleta) {
+    overflow: visible;
+}
+
+/* Aviator:
+   mantém o painel no tamanho correto, sem o comportamento
+   de colunas usado pelos jogos com .linha. */
+#matriz.aviator-tela {
+    display: block;
+    flex-direction: initial;
+    gap: 0;
+}
+
+/* Opções Binárias:
+   o gráfico usa elementos posicionados dentro da matriz.
+   Não pode herdar o layout flex dos outros jogos. */
+#matriz.chart-opbin,
+#matriz:has(.chart-trilho),
+#matriz:has(.chart-linha-preco) {
+    display: block;
+    flex-direction: initial;
+    gap: 0;
+}
+
+/* Mobile: preserva o tamanho original do Aviator. */
+@media (max-width: 768px) {
+    #matriz.aviator-tela {
+        display: block;
+        flex-direction: initial;
+        gap: 0;
+    }
+
+    #matriz:has(.mesa-roleta),
+    #matriz:has(.linha) {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    #matriz.chart-opbin,
+    #matriz:has(.chart-trilho),
+    #matriz:has(.chart-linha-preco) {
+        display: block;
+        flex-direction: initial;
+        gap: 0;
+    }
 }

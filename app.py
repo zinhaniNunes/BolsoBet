@@ -203,6 +203,12 @@ def classic_slot():
     session["jogo_atual"] = "classic-slot"
     return render_template("games/slot-classic.html")
 
+@app.route("/games/slot-coringa")
+@login_required
+def slot_coringa():
+    session["jogo_atual"] = "slot-coringa"
+    return render_template("games/slot-coringa.html")
+
 @app.route("/games/slot-king")
 @login_required
 def fortune_king():
@@ -225,32 +231,86 @@ OPBIN_CHANCE_VITORIA = 33  # em %
 OPBIN_MULTIPLICADOR = 2
 OPBIN_HISTORICO_MAX = 10
 
+# preço-base de cada "moeda" simulada (puramente decorativo, só pra dar
+# escalas diferentes ao gráfico quando o usuário troca de ativo)
+OPBIN_MOEDAS = {
+    "BTC/USDT": 62000.0,
+    "ETH/USDT": 3400.0,
+    "BNB/USDT": 580.0,
+    "SOL/USDT": 145.0,
+}
+OPBIN_MOEDA_PADRAO = "BTC/USDT"
 
-def opbin_gerar_valor():
-    return round(random.randint(1, 100) / 100, 2)
+
+def opbin_decimais(preco_base):
+    return 2 if preco_base >= 10 else 4
 
 
-def opbin_estado_usuario(usuario_id):
-    """Garante que o usuário tenha um histórico de velas iniciado."""
-    if usuario_id not in OPBIN_ATIVOS:
+def opbin_gerar_candle(preco_atual, preco_base, forcar_cor=None):
+    """Gera uma vela a partir do preço atual, no estilo candlestick."""
+    cor = forcar_cor if forcar_cor in ("verde", "vermelho") else random.choice(["verde", "vermelho"])
+    decimais = opbin_decimais(preco_base)
+
+    variacao_pct = random.uniform(0.004, 0.018)  # 0.4% a 1.8% de variação
+    delta = preco_atual * variacao_pct
+    abertura = preco_atual
+
+    if cor == "verde":
+        fechamento = abertura + delta
+    else:
+        fechamento = abertura - delta
+
+    # mantém o preço dentro de uma faixa razoável em torno do preço-base
+    fechamento = max(preco_base * 0.6, min(preco_base * 1.4, fechamento))
+
+    topo = max(abertura, fechamento) + preco_atual * random.uniform(0, 0.004)
+    fundo = min(abertura, fechamento) - preco_atual * random.uniform(0, 0.004)
+
+    candle = {
+        "abertura": round(abertura, decimais),
+        "fechamento": round(fechamento, decimais),
+        "topo": round(topo, decimais),
+        "fundo": round(max(0.0, fundo), decimais),
+        "cor": cor,
+        "resultado": None,
+    }
+    return candle
+
+
+def opbin_moeda_valida(moeda):
+    return moeda if moeda in OPBIN_MOEDAS else OPBIN_MOEDA_PADRAO
+
+
+def opbin_estado_usuario(usuario_id, moeda):
+    """Garante que o usuário tenha um histórico de velas e um preço iniciados
+    para a moeda pedida. Cada moeda tem seu próprio mercado independente."""
+    moeda = opbin_moeda_valida(moeda)
+    mercados = OPBIN_ATIVOS.setdefault(usuario_id, {})
+
+    if moeda not in mercados:
+        preco_base = OPBIN_MOEDAS[moeda]
+        preco_atual = preco_base
         velas = []
         for _ in range(5):
-            velas.append({
-                "valor": opbin_gerar_valor(),
-                "cor": random.choice(["verde", "vermelho"]),
-                "resultado": None,
-            })
-        OPBIN_ATIVOS[usuario_id] = {"velas": velas}
-    return OPBIN_ATIVOS[usuario_id]
+            candle = opbin_gerar_candle(preco_atual, preco_base)
+            velas.append(candle)
+            preco_atual = candle["fechamento"]
+        mercados[moeda] = {"velas": velas, "preco_atual": preco_atual, "preco_base": preco_base}
+
+    return mercados[moeda]
 
 
 @app.route("/opbin/estado")
 @login_required
 def opbin_estado():
     usuario_id = session["usuario_id"]
-    estado = opbin_estado_usuario(usuario_id)
+    moeda = opbin_moeda_valida(request.args.get("moeda"))
+    estado = opbin_estado_usuario(usuario_id, moeda)
     return jsonify({
+        "moeda": moeda,
+        "moedas_disponiveis": list(OPBIN_MOEDAS.keys()),
         "velas": estado["velas"],
+        "preco_atual": estado["preco_atual"],
         "saldo": session.get("saldo"),
         "aposta_minima": OPBIN_APOSTA_MINIMA,
     })
@@ -265,6 +325,8 @@ def opbin_jogar():
     direcao = dados.get("direcao")
     if direcao not in ("subir", "descer"):
         return jsonify({"erro": "Direção inválida"}), 400
+
+    moeda = opbin_moeda_valida(dados.get("moeda"))
 
     try:
         aposta = round(float(dados.get("aposta")), 2)
@@ -284,7 +346,7 @@ def opbin_jogar():
         con.close()
         return jsonify({"erro": "Saldo insuficiente"}), 400
 
-    estado = opbin_estado_usuario(usuario_id)
+    estado = opbin_estado_usuario(usuario_id, moeda)
 
     venceu = OPBIN_CHANCE_VITORIA > random.randint(1, 100)
     cor_resultado = "verde" if direcao == "subir" else "vermelho"
@@ -305,12 +367,11 @@ def opbin_jogar():
 
     session["saldo"] = saldo
 
-    nova_vela = {
-        "valor": opbin_gerar_valor(),
-        "cor": cor_resultado,
-        "resultado": "vitoria" if venceu else "derrota",
-    }
+    nova_vela = opbin_gerar_candle(estado["preco_atual"], estado["preco_base"], forcar_cor=cor_resultado)
+    nova_vela["resultado"] = "vitoria" if venceu else "derrota"
+
     estado["velas"].append(nova_vela)
+    estado["preco_atual"] = nova_vela["fechamento"]
     if len(estado["velas"]) > OPBIN_HISTORICO_MAX:
         estado["velas"].pop(0)
 

@@ -11,23 +11,18 @@
 
 <body alt="background error" style="background-color: #182437; background-size: cover; background-position: center; background-repeat: no-repeat;">
 
-    
+
     <main class="container-lateral">
                         <!-- mesa -->
-                <div class="controles">
-                    <select id="conversões" name="conversões">
-                        <option>BTC/USD</option>
-                        <option>BTC/BRL</option>
-                        <option>BTC/EUR</option>
-                        <option>USD/BRL</option>
-                        <option>USD/EUR</option>
-                        <option>EUR/BRL</option>
-                    </select>
+                <div>
+                    <div class="chart-header">
+                        <label for="moeda-select" class="chart-header-label">Ativo</label>
+                        <select id="moeda-select" class="select-moeda"></select>
+                    </div>
                     <div id="matriz" style="width: 800px;height: 600px;">
 
                     </div>
                 </div>
-
                 <div class="slot-machine" style="display: flex; flex-direction: column;">
                     
                         <div class="controles">
